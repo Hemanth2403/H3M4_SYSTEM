@@ -20,6 +20,16 @@ interface Submission {
 export default function AdminReview() {
   const [submissions, setSubmissions] = useState<Submission[]>([
     {
+      id: 105,
+      title: "SQL Injection in Search Filter (Bypasses WAF)",
+      author: "acid_burn",
+      date: "2024-12-18",
+      category: "Web Application",
+      status: "pending",
+      severity: "critical",
+      description: "A blind SQL injection vulnerability exists in the 'filter' parameter of the search endpoint. It allows an attacker to dump the entire user database. The payload successfully bypasses the configured WAF rules..."
+    },
+    {
       id: 101,
       title: "Unauthenticated RCE in User Profile Service",
       author: "neo_matrix",
@@ -143,15 +153,33 @@ export default function AdminReview() {
                  <div className="space-y-2">
                   <label className="text-xs uppercase font-bold text-muted-foreground tracking-wider">Affected Systems</label>
                   <div className="p-3 rounded bg-black/20 border border-white/5 text-sm">
-                    • User Profile Service (v2.1)<br/>
-                    • AWS S3 Buckets (Production)
+                    {selectedSubmission.category === "Web Application" ? (
+                      <>
+                        • Main Customer Portal (v3.4)<br/>
+                        • User Database (PostgreSQL)
+                      </>
+                    ) : (
+                      <>
+                        • User Profile Service (v2.1)<br/>
+                        • AWS S3 Buckets (Production)
+                      </>
+                    )}
                   </div>
                  </div>
                  <div className="space-y-2">
                   <label className="text-xs uppercase font-bold text-muted-foreground tracking-wider">Compliance Impact</label>
                   <div className="p-3 rounded bg-black/20 border border-white/5 text-sm">
-                    • GDPR Article 32<br/>
-                    • ISO 27001 A.14.2
+                    {selectedSubmission.category === "Web Application" ? (
+                      <>
+                        • PCI-DSS Req 6.5.1<br/>
+                        • GDPR Article 32 (Data Breach)
+                      </>
+                    ) : (
+                      <>
+                        • GDPR Article 32<br/>
+                        • ISO 27001 A.14.2
+                      </>
+                    )}
                   </div>
                  </div>
               </div>

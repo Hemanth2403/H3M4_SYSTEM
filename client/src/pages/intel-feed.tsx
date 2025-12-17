@@ -7,6 +7,15 @@ export default function IntelFeed() {
 
   const threats = [
     {
+      id: 5,
+      title: "Stored XSS in User Profile via SVG Upload",
+      severity: "critical",
+      type: "Web Application",
+      score: 92,
+      date: "10m ago",
+      author: "ghost_shell"
+    },
+    {
       id: 1,
       title: "AWS IAM Privilege Escalation via Misconfigured Role",
       severity: "critical",
