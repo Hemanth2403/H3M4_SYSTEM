@@ -9,12 +9,14 @@ import Dashboard from "@/pages/dashboard";
 import IntelFeed from "@/pages/intel-feed";
 import SubmitResearch from "@/pages/submit";
 import Profile from "@/pages/profile";
+import Mission from "@/pages/mission";
 
 function Router() {
   return (
     <Layout>
       <Switch>
         <Route path="/" component={Dashboard}/>
+        <Route path="/mission" component={Mission}/>
         <Route path="/intel" component={IntelFeed}/>
         <Route path="/submit" component={SubmitResearch}/>
         <Route path="/profile" component={Profile}/>

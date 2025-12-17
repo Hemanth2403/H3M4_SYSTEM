@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Shield, Activity, FileText, User, Search, Bell, Menu } from "lucide-react";
+import { Shield, Activity, FileText, User, Search, Bell, Menu, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import heroBg from '@assets/generated_images/abstract_cyberpunk_security_background.png';
 
@@ -10,6 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { icon: Shield, label: "Dashboard", href: "/" },
     { icon: Activity, label: "Intel Feed", href: "/intel" },
     { icon: FileText, label: "Submit Research", href: "/submit" },
+    { icon: Target, label: "Mission Protocol", href: "/mission" },
     { icon: User, label: "Profile", href: "/profile" },
   ];
 
