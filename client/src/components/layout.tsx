@@ -1,18 +1,50 @@
 import { Link, useLocation } from "wouter";
-import { Shield, Activity, FileText, User, Search, Bell, Menu, Target } from "lucide-react";
+import { Shield, Activity, FileText, User, Search, Bell, Menu, Target, LogOut, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import heroBg from '@assets/generated_images/abstract_cyberpunk_security_background.png';
+import { useAuth } from "@/context/auth-context";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const { user, logout } = useAuth();
 
-  const navItems = [
-    { icon: Shield, label: "Dashboard", href: "/" },
-    { icon: Activity, label: "Intel Feed", href: "/intel" },
-    { icon: FileText, label: "Submit Research", href: "/submit" },
-    { icon: Target, label: "Mission Protocol", href: "/mission" },
-    { icon: User, label: "Profile", href: "/profile" },
-  ];
+  const getNavItems = () => {
+    const common = [
+       { icon: Target, label: "Mission Protocol", href: "/mission" },
+    ];
+
+    if (user?.role === 'admin') {
+      return [
+        { icon: Lock, label: "Review Queue", href: "/admin/review" },
+        ...common
+      ];
+    }
+    
+    if (user?.role === 'enterprise') {
+      return [
+        { icon: Shield, label: "Intel Dashboard", href: "/" },
+        { icon: Activity, label: "Threat Feed", href: "/intel" },
+        ...common,
+        { icon: User, label: "Company Profile", href: "/profile" },
+      ];
+    }
+
+    // Default / Researcher
+    return [
+      { icon: Shield, label: "Dashboard", href: "/" },
+      { icon: Activity, label: "Intel Feed", href: "/intel" },
+      { icon: FileText, label: "Submit Research", href: "/submit" },
+      ...common,
+      { icon: User, label: "My Profile", href: "/profile" },
+    ];
+  };
+
+  const navItems = getNavItems();
+
+  // If no user, show simple layout or redirect (handled by App.tsx)
+  // For layout purposes, we render the children directly if on auth page, 
+  // but Layout is usually wrapped around protected pages.
+  if (!user) return <>{children}</>;
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 selection:text-primary-foreground overflow-hidden flex">
@@ -34,6 +66,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Shield className="h-8 w-8" />
             <h1 className="text-xl font-heading font-bold tracking-wider">H3M4<span className="text-foreground/70 text-sm font-normal ml-1">VAULT</span></h1>
           </div>
+          <div className="mt-2 text-xs font-mono text-muted-foreground uppercase">
+             {user.role} ACCESS
+          </div>
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
@@ -54,16 +89,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="p-4 border-t border-sidebar-border">
-          <div className="glass-panel p-4 rounded-lg">
-            <p className="text-xs text-muted-foreground font-mono mb-2">SYSTEM STATUS</p>
-            <div className="flex items-center gap-2 text-sm text-primary">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              Operational
-            </div>
-          </div>
+          <button 
+            onClick={logout}
+            className="flex items-center gap-3 px-4 py-2 w-full text-muted-foreground hover:text-destructive hover:bg-white/5 rounded-md transition-colors"
+          >
+            <LogOut className="h-5 w-5" />
+            <span className="font-medium">Disconnect</span>
+          </button>
         </div>
       </aside>
 
@@ -92,7 +124,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-destructive rounded-full border border-background" />
             </button>
             <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-black font-bold text-xs">
-              JS
+              {user.avatar}
             </div>
           </div>
         </header>

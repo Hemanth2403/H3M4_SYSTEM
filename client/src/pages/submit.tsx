@@ -26,6 +26,8 @@ const formSchema = z.object({
   description: z.string().min(50, {
     message: "Description must be detailed (at least 50 characters).",
   }),
+  impact_analysis: z.string().optional(),
+  affected_systems: z.string().optional(),
   poc: z.string().optional(),
 });
 
@@ -37,6 +39,8 @@ export default function SubmitResearch() {
       category: "",
       severity: "",
       description: "",
+      impact_analysis: "",
+      affected_systems: "",
       poc: "",
     },
   });
@@ -152,6 +156,44 @@ export default function SubmitResearch() {
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="impact_analysis"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business Impact Analysis</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="What is the potential loss? (Data, Financial, Reputation)" 
+                        className="min-h-[100px] bg-background/50 border-white/10 font-mono text-sm" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="affected_systems"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Affected Systems / Components</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="List specific APIs, DBs, or Cloud Resources..." 
+                        className="min-h-[100px] bg-background/50 border-white/10 font-mono text-sm" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
