@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Filter, ChevronDown } from "lucide-react";
+import { Search, Filter, ChevronDown, Download } from "lucide-react";
 import { ThreatCard } from "@/components/threat-card";
 
 export default function IntelFeed() {
@@ -69,6 +69,10 @@ export default function IntelFeed() {
           <h1 className="text-3xl font-heading font-bold mb-1">Intel Feed</h1>
           <p className="text-muted-foreground">Verified vulnerabilities and emerging threat patterns.</p>
         </div>
+        <button className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md font-bold text-sm hover:bg-primary/90 transition-colors">
+          <Download className="h-4 w-4" />
+          Export Audit Report
+        </button>
       </div>
 
       {/* Filters Bar */}
@@ -82,6 +86,11 @@ export default function IntelFeed() {
           />
         </div>
         <div className="flex gap-2">
+          <button className="flex items-center gap-2 px-4 py-2 bg-background/50 border border-white/10 rounded-md text-sm hover:bg-white/5 transition-colors">
+            <Filter className="h-4 w-4" />
+            Industry
+            <ChevronDown className="h-3 w-3 opacity-50" />
+          </button>
           <button className="flex items-center gap-2 px-4 py-2 bg-background/50 border border-white/10 rounded-md text-sm hover:bg-white/5 transition-colors">
             <Filter className="h-4 w-4" />
             Severity

@@ -22,6 +22,7 @@ const formSchema = z.object({
     message: "Title must be at least 10 characters.",
   }),
   category: z.string(),
+  research_type: z.string(),
   severity: z.string(),
   description: z.string().min(50, {
     message: "Description must be detailed (at least 50 characters).",
@@ -29,6 +30,9 @@ const formSchema = z.object({
   impact_analysis: z.string().optional(),
   affected_systems: z.string().optional(),
   poc: z.string().optional(),
+  agreement: z.boolean().default(false).refine((val) => val === true, {
+    message: "You must agree to the ethical disclosure policy.",
+  }),
 });
 
 export default function SubmitResearch() {
@@ -37,11 +41,13 @@ export default function SubmitResearch() {
     defaultValues: {
       title: "",
       category: "",
+      research_type: "",
       severity: "",
       description: "",
       impact_analysis: "",
       affected_systems: "",
       poc: "",
+      agreement: false,
     },
   });
 
@@ -88,7 +94,7 @@ export default function SubmitResearch() {
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 control={form.control}
                 name="category"
@@ -107,6 +113,30 @@ export default function SubmitResearch() {
                         <SelectItem value="cloud">Cloud Infrastructure</SelectItem>
                         <SelectItem value="mobile">Mobile Security</SelectItem>
                         <SelectItem value="iot">IoT / Hardware</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="research_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Research Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-background/50 border-white/10">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="attack_technique">Attack Technique</SelectItem>
+                        <SelectItem value="threat_model">Threat Model</SelectItem>
+                        <SelectItem value="misconfig">Misconfiguration Pattern</SelectItem>
+                        <SelectItem value="zero_day">Zero-Day (Undisclosed)</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -216,10 +246,30 @@ export default function SubmitResearch() {
               )}
             />
 
-            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 flex gap-3 text-sm text-yellow-200/80">
-              <AlertTriangle className="h-5 w-5 shrink-0 text-yellow-500" />
-              <p>By submitting, you agree to the H3M4 Responsible Disclosure Policy. Do not exploit vulnerabilities beyond proof of concept.</p>
-            </div>
+            <FormField
+              control={form.control}
+              name="agreement"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-primary/20 bg-primary/5 p-4">
+                  <FormControl>
+                    <input
+                      type="checkbox"
+                      checked={field.value}
+                      onChange={field.onChange}
+                      className="h-4 w-4 mt-1 rounded border-primary/50 bg-background text-primary focus:ring-primary"
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="font-bold">
+                      Ethical Disclosure Agreement
+                    </FormLabel>
+                    <FormDescription>
+                      I confirm that I have not exploited this vulnerability beyond proof-of-concept, have not accessed sensitive user data, and agree to the H3M4 Legal & Ethics Policy.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
 
             <div className="flex justify-end gap-4 pt-4">
               <Button type="button" variant="outline" className="border-white/10 hover:bg-white/5">Save Draft</Button>

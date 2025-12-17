@@ -166,22 +166,61 @@ export default function AdminReview() {
               </div>
 
               {/* Translation Layer Input */}
-              <div className="space-y-2 pt-4 border-t border-white/10">
-                <div className="flex items-center gap-2 mb-2">
-                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                  <label className="text-sm font-bold text-foreground">Intelligence Translation (Executive Summary)</label>
+              <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-primary" />
+                  <label className="text-sm font-bold text-foreground">Intelligence Translation Layer</label>
                 </div>
-                <Textarea 
-                  placeholder="Enter the business-ready summary for enterprise clients..." 
-                  className="bg-background/50 border-white/10 min-h-[100px]"
-                />
+                
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Executive Summary</label>
+                    <Textarea 
+                      placeholder="High-level business impact summary..." 
+                      className="bg-background/50 border-white/10 min-h-[80px]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Recommended Mitigations</label>
+                    <Textarea 
+                      placeholder="Step-by-step technical fixes..." 
+                      className="bg-background/50 border-white/10 min-h-[80px]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Compliance & Audit Notes (ISO, GDPR, RBI)</label>
+                    <Textarea 
+                      placeholder="Relevant compliance implications..." 
+                      className="bg-background/50 border-white/10 min-h-[60px]"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-6 border-t border-white/10">
-              <div className="flex items-center gap-2">
-                <label className="text-sm text-muted-foreground">Threat Score:</label>
-                <input type="number" defaultValue={85} className="w-16 bg-black/20 border border-white/10 rounded px-2 py-1 text-center font-mono font-bold text-primary" />
+            <div className="flex items-center justify-between pt-6 border-t border-white/10 bg-black/20 -mx-6 -mb-6 p-6">
+              <div className="flex gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-muted-foreground">Threat Score</label>
+                  <input type="number" defaultValue={85} className="w-20 bg-background border border-white/10 rounded px-2 py-1 text-center font-mono font-bold text-primary" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-muted-foreground">Confidence</label>
+                  <select className="w-32 bg-background border border-white/10 rounded px-2 py-1 text-xs">
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
+                  </select>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs text-muted-foreground">Industry</label>
+                  <select className="w-32 bg-background border border-white/10 rounded px-2 py-1 text-xs">
+                    <option>All</option>
+                    <option>FinTech</option>
+                    <option>SaaS</option>
+                    <option>GovTech</option>
+                  </select>
+                </div>
               </div>
               <div className="flex gap-3">
                 <Button variant="destructive" onClick={handleReject} className="bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/20">

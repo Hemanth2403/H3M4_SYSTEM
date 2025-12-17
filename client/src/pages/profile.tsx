@@ -1,4 +1,4 @@
-import { Shield, Award, DollarSign, Target, Calendar } from "lucide-react";
+import { Shield, Award, DollarSign, Target, Calendar, Briefcase } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
 import { ThreatCard } from "@/components/threat-card";
 
@@ -38,6 +38,10 @@ export default function Profile() {
               <div className="flex items-center gap-2 text-foreground/80 bg-white/5 px-3 py-1 rounded-full">
                 <Calendar className="h-4 w-4 text-blue-500" />
                 <span>Joined: Jan 2024</span>
+              </div>
+              <div className="flex items-center gap-2 text-foreground/80 bg-white/5 px-3 py-1 rounded-full">
+                <Briefcase className="h-4 w-4 text-purple-500" />
+                <span>Enterprise Usage: 142 Orgs</span>
               </div>
             </div>
           </div>
