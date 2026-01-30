@@ -16,7 +16,7 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background relative overflow-hidden">
       {/* Background Overlay */}
-      <div 
+      <div
         className="fixed inset-0 z-0 opacity-20 pointer-events-none"
         style={{
           backgroundImage: `url(${heroBg})`,
@@ -24,8 +24,8 @@ export default function AuthPage() {
           backgroundPosition: 'center',
         }}
       />
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-md p-8 glass-panel rounded-xl border border-white/10 relative z-10 shadow-2xl"
@@ -43,24 +43,22 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => setSelectedRole("researcher")}
-              className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-all ${
-                selectedRole === "researcher" 
-                  ? "bg-primary/20 border-primary text-primary" 
-                  : "bg-black/20 border-white/10 text-muted-foreground hover:bg-white/5"
-              }`}
+              className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-all ${selectedRole === "researcher"
+                ? "bg-primary/20 border-primary text-primary"
+                : "bg-black/20 border-white/10 text-muted-foreground hover:bg-white/5"
+                }`}
             >
               <UserCircle className="h-6 w-6 mb-2" />
               <span className="text-xs font-medium">Researcher</span>
             </button>
-            
+
             <button
               type="button"
               onClick={() => setSelectedRole("enterprise")}
-              className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-all ${
-                selectedRole === "enterprise" 
-                  ? "bg-secondary/20 border-secondary text-secondary" 
-                  : "bg-black/20 border-white/10 text-muted-foreground hover:bg-white/5"
-              }`}
+              className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-all ${selectedRole === "enterprise"
+                ? "bg-secondary/20 border-secondary text-secondary"
+                : "bg-black/20 border-white/10 text-muted-foreground hover:bg-white/5"
+                }`}
             >
               <Building2 className="h-6 w-6 mb-2" />
               <span className="text-xs font-medium">Enterprise</span>
@@ -69,11 +67,10 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => setSelectedRole("admin")}
-              className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-all ${
-                selectedRole === "admin" 
-                  ? "bg-destructive/20 border-destructive text-destructive" 
-                  : "bg-black/20 border-white/10 text-muted-foreground hover:bg-white/5"
-              }`}
+              className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-all ${selectedRole === "admin"
+                ? "bg-destructive/20 border-destructive text-destructive"
+                : "bg-black/20 border-white/10 text-muted-foreground hover:bg-white/5"
+                }`}
             >
               <Lock className="h-6 w-6 mb-2" />
               <span className="text-xs font-medium">Admin</span>
@@ -83,21 +80,20 @@ export default function AuthPage() {
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-xs font-mono text-muted-foreground">IDENTITY_TOKEN</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 defaultValue="demo-user-access-token"
                 className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-sm font-mono text-foreground focus:outline-none focus:border-primary/50"
                 readOnly
               />
             </div>
-            
-            <button 
-              type="submit" 
-              className={`w-full py-3 rounded-md font-bold text-sm transition-all ${
-                selectedRole === "researcher" ? "bg-primary text-primary-foreground hover:bg-primary/90" :
+
+            <button
+              type="submit"
+              className={`w-full py-3 rounded-md font-bold text-sm transition-all ${selectedRole === "researcher" ? "bg-primary text-primary-foreground hover:bg-primary/90" :
                 selectedRole === "enterprise" ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" :
-                "bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              }`}
+                  "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                }`}
             >
               INITIATE SESSION
             </button>

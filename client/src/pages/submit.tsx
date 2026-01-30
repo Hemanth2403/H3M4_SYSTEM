@@ -14,8 +14,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Upload, ShieldCheck, AlertTriangle } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useLocation } from "wouter";
+import { insertSubmissionSchema } from "@shared/schema";
 
 const formSchema = z.object({
   title: z.string().min(10, {
@@ -36,6 +40,8 @@ const formSchema = z.object({
 });
 
 export default function SubmitResearch() {
+  const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,12 +57,34 @@ export default function SubmitResearch() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    toast({
-      title: "Research Submitted for Verification",
-      description: "Your submission has been encrypted and sent to the H3M4 review team.",
-    });
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const submissionData = {
+        title: values.title,
+        category: values.category,
+        researchType: values.research_type,
+        severity: values.severity,
+        description: values.description,
+        impactAnalysis: values.impact_analysis,
+        affectedSystems: values.affected_systems,
+        poc: values.poc,
+        userId: user?.id || "anonymous",
+        author: user?.name || "Anonymous",
+      };
+
+      await apiRequest("POST", "/api/submissions", submissionData);
+      queryClient.invalidateQueries({ queryKey: ["/api/submissions"] });
+
+      toast.success("Research Submitted for Verification", {
+        description: "Your submission has been encrypted and sent to the H3M4 review team.",
+      });
+
+      setLocation("/activity");
+    } catch (error: any) {
+      toast.error("Submission Failed", {
+        description: error.message
+      });
+    }
   }
 
   return (
@@ -74,7 +102,7 @@ export default function SubmitResearch() {
       <div className="bg-card/40 backdrop-blur-md border border-border rounded-xl p-8 relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -134,8 +162,10 @@ export default function SubmitResearch() {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="attack_technique">Attack Technique</SelectItem>
-                        <SelectItem value="threat_model">Threat Model</SelectItem>
+                        <SelectItem value="threat_model">Threat Model / Hypothesis</SelectItem>
                         <SelectItem value="misconfig">Misconfiguration Pattern</SelectItem>
+                        <SelectItem value="exploit_chain">Exploit Path Chain</SelectItem>
+                        <SelectItem value="mitigation_validation">Mitigation Validation</SelectItem>
                         <SelectItem value="zero_day">Zero-Day (Undisclosed)</SelectItem>
                       </SelectContent>
                     </Select>
@@ -176,10 +206,10 @@ export default function SubmitResearch() {
                 <FormItem>
                   <FormLabel>Technical Description & Impact</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Describe the vulnerability, how to reproduce it, and its potential business impact..." 
-                      className="min-h-[150px] bg-background/50 border-white/10 font-mono text-sm" 
-                      {...field} 
+                    <Textarea
+                      placeholder="Describe the vulnerability, how to reproduce it, and its potential business impact..."
+                      className="min-h-[150px] bg-background/50 border-white/10 font-mono text-sm"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -195,10 +225,10 @@ export default function SubmitResearch() {
                   <FormItem>
                     <FormLabel>Business Impact Analysis</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="What is the potential loss? (Data, Financial, Reputation)" 
-                        className="min-h-[100px] bg-background/50 border-white/10 font-mono text-sm" 
-                        {...field} 
+                      <Textarea
+                        placeholder="What is the potential loss? (Data, Financial, Reputation)"
+                        className="min-h-[100px] bg-background/50 border-white/10 font-mono text-sm"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -213,10 +243,10 @@ export default function SubmitResearch() {
                   <FormItem>
                     <FormLabel>Affected Systems / Components</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="List specific APIs, DBs, or Cloud Resources..." 
-                        className="min-h-[100px] bg-background/50 border-white/10 font-mono text-sm" 
-                        {...field} 
+                      <Textarea
+                        placeholder="List specific APIs, DBs, or Cloud Resources..."
+                        className="min-h-[100px] bg-background/50 border-white/10 font-mono text-sm"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -264,7 +294,7 @@ export default function SubmitResearch() {
                       Ethical Disclosure Agreement
                     </FormLabel>
                     <FormDescription>
-                      I confirm that I have not exploited this vulnerability beyond proof-of-concept, have not accessed sensitive user data, and agree to the H3M4 Legal & Ethics Policy.
+                      I confirm that I have operated within the H3M4 Mission Protocol, avoided production exploitation, and agree to the mandatory session logging. I am submitting this as an Intelligence Contributor under governing legal guardrails.
                     </FormDescription>
                   </div>
                 </FormItem>

@@ -1,0 +1,358 @@
+{
+  "users": [],
+  "submissions": [
+    {
+      "id": "4951e177-b081-45c8-b36f-6816ade42081",
+      "title": "SQL Injection in Search Filter (Bypasses WAF)",
+      "category": "Web Application",
+      "researchType": "attack_technique",
+      "severity": "critical",
+      "description": "A blind SQL injection vulnerability exists in the 'filter' parameter of the search endpoint. It allows an attacker to dump the entire user database. The payload successfully bypasses the configured WAF rules...",
+      "impactAnalysis": "Full database exposure (PII), regulatory violation (GDPR).",
+      "affectedSystems": "Customer Search API, Production SQL cluster",
+      "poc": "poc_sql_inject.py",
+      "status": "rejected",
+      "adminFeedback": "",
+      "submittedAt": "2026-01-30T02:18:57.990Z",
+      "userId": "system",
+      "author": "acid_burn"
+    },
+    {
+      "id": "f91cab1f-bbe6-4ba5-9e6f-f6acc187908e",
+      "title": "D MDNKQE",
+      "category": "API Security",
+      "severity": "High",
+      "description": "DBQEFJEQFN",
+      "impactAnalysis": null,
+      "affectedSystems": null,
+      "poc": null,
+      "status": "verified",
+      "adminFeedback": "",
+      "submittedAt": "2026-01-30T10:27:16.375Z",
+      "userId": "r1",
+      "author": "Cipher_01"
+    },
+    {
+      "id": "47f66569-a660-4c49-84cd-041ad784c110",
+      "title": "gl[ly",
+      "category": "Cloud Infrastructure",
+      "severity": "Low",
+      "description": "gngnid",
+      "impactAnalysis": null,
+      "affectedSystems": null,
+      "poc": null,
+      "status": "verified",
+      "adminFeedback": "",
+      "submittedAt": "2026-01-30T18:55:44.362Z",
+      "userId": "r1",
+      "author": "Cipher_01"
+    },
+    {
+      "id": "779e4440-aa46-451d-8f92-d5f90ea44626",
+      "title": "mfkmgkgrkeg d erkgker gergnmer gkerkng",
+      "category": "cloud",
+      "researchType": "exploit_chain",
+      "severity": "medium",
+      "description": "f wekgmg rgmnkr gkrgporg rkmgkrgkrwgmkrg wrkg orw gsr girgmsr gkwrmg",
+      "impactAnalysis": "f rkgkr",
+      "affectedSystems": "f mg rg",
+      "poc": "",
+      "status": "verified",
+      "adminFeedback": "",
+      "submittedAt": "2026-01-30T18:58:42.239Z",
+      "userId": "r1",
+      "author": "Cipher_01"
+    },
+    {
+      "id": "39693d13-4efb-400d-a462-9e0e26b58879",
+      "title": "fmkgm fkm, dgorgmk",
+      "category": "Web Application",
+      "severity": "Medium",
+      "description": "g lrgmreg,lrgpermge ",
+      "impactAnalysis": null,
+      "affectedSystems": null,
+      "poc": null,
+      "status": "rejected",
+      "adminFeedback": "",
+      "submittedAt": "2026-01-30T18:59:55.142Z",
+      "userId": "r1",
+      "author": "Cipher_01"
+    }
+  ],
+  "securityEvents": [
+    {
+      "id": "fe2ff6e6-80ee-444b-bd8f-312586723b5c",
+      "type": "ATTACK",
+      "description": "Inbound RPC flood detected on Shard #882",
+      "severity": "HIGH",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    },
+    {
+      "type": "LOCKDOWN",
+      "description": "Global Node Isolation Initiated [Protocol 0x99]",
+      "severity": "CRITICAL",
+      "id": "c4c0fcdc-075e-4aec-80bd-39551a67504b",
+      "timestamp": "2026-01-30T13:10:50.676Z"
+    },
+    {
+      "type": "INTEL_SUBMISSION",
+      "description": "New research protocol uploaded: gl[ly",
+      "severity": "MEDIUM",
+      "id": "45477386-841f-47af-9f05-175e30767000",
+      "timestamp": "2026-01-30T18:55:44.376Z"
+    },
+    {
+      "type": "INTEL_SUBMISSION",
+      "description": "New research protocol uploaded: mfkmgkgrkeg d erkgker gergnmer gkerkng",
+      "severity": "MEDIUM",
+      "id": "4cf3b874-7e4a-450b-a2fa-1496f183b15d",
+      "timestamp": "2026-01-30T18:58:42.247Z"
+    },
+    {
+      "type": "INTEL_SUBMISSION",
+      "description": "New research protocol uploaded: fmkgm fkm, dgorgmk",
+      "severity": "MEDIUM",
+      "id": "3d9bcfdc-ad70-44ee-8a03-27cf51c4e421",
+      "timestamp": "2026-01-30T18:59:55.153Z"
+    }
+  ],
+  "p2pPeers": [
+    {
+      "id": "4bd8b74d-da30-49b7-b508-984f73720093",
+      "peerId": "5E1209",
+      "hash": "0x913cac74",
+      "isp": "Cloudflare",
+      "type": "VALIDATOR",
+      "status": "VALID",
+      "reputation": "28",
+      "timestamp": "2026-01-30T13:10:46.495Z"
+    },
+    {
+      "id": "61aa7df6-5ff4-497a-a0ee-c0ea71e428d6",
+      "peerId": "B697AC",
+      "hash": "0xcecc3154",
+      "isp": "Cloudflare",
+      "type": "INBOUND_RPC",
+      "status": "VALID",
+      "reputation": "98",
+      "timestamp": "2026-01-30T13:10:43.463Z"
+    },
+    {
+      "id": "337323d0-455e-471f-b846-b21a7e2fb40e",
+      "peerId": "F8C75F",
+      "hash": "0x4c90aaa6",
+      "isp": "AWS",
+      "type": "RELAY",
+      "status": "SUSPICIOUS",
+      "reputation": "49",
+      "timestamp": "2026-01-30T13:10:31.021Z"
+    },
+    {
+      "id": "7e225938-cff4-4385-bf61-6ba27c132f8d",
+      "peerId": "9E3CC7",
+      "hash": "0xcf6b55dc",
+      "isp": "Cloudflare",
+      "type": "RELAY",
+      "status": "VALID",
+      "reputation": "48",
+      "timestamp": "2026-01-30T13:10:24.945Z"
+    },
+    {
+      "id": "5b9c04b0-8551-40f8-a322-046f43a9dbc3",
+      "peerId": "B11809",
+      "hash": "0xf4019108",
+      "isp": "AWS",
+      "type": "VALIDATOR",
+      "status": "SUSPICIOUS",
+      "reputation": "22",
+      "timestamp": "2026-01-30T13:10:09.828Z"
+    },
+    {
+      "id": "24c1deb1-aae5-4503-8f24-26ac3769ea72",
+      "peerId": "FF6B32",
+      "hash": "0xc185098e",
+      "isp": "Google Cloud",
+      "type": "VALIDATOR",
+      "status": "VALID",
+      "reputation": "51",
+      "timestamp": "2026-01-30T13:10:03.745Z"
+    },
+    {
+      "id": "f8413848-ef52-4a97-9469-b12a4d289942",
+      "peerId": "EEFE26",
+      "hash": "0x6b980cd7",
+      "isp": "Akamai",
+      "type": "RELAY",
+      "status": "VALID",
+      "reputation": "63",
+      "timestamp": "2026-01-30T13:10:00.386Z"
+    },
+    {
+      "id": "9a8e1a0f-ff90-46ee-a144-22ea1c94bf24",
+      "peerId": "756C21",
+      "hash": "0xd5090ebe",
+      "isp": "Cloudflare",
+      "type": "INBOUND_RPC",
+      "status": "VALID",
+      "reputation": "23",
+      "timestamp": "2026-01-30T13:09:48.134Z"
+    },
+    {
+      "id": "fa7f0331-3c52-4a80-a50c-6a5c5a3174f0",
+      "peerId": "66EEDD",
+      "hash": "0x7207a5db",
+      "isp": "Cloudflare",
+      "type": "RELAY",
+      "status": "VALID",
+      "reputation": "61",
+      "timestamp": "2026-01-30T02:34:12.316Z"
+    },
+    {
+      "id": "747bd807-6ca8-4dbb-bfca-fd22c9b19048",
+      "peerId": "06E547",
+      "hash": "0x6c77b168",
+      "isp": "DigitalOcean",
+      "type": "RELAY",
+      "status": "SUSPICIOUS",
+      "reputation": "56",
+      "timestamp": "2026-01-30T02:24:45.461Z"
+    },
+    {
+      "id": "2aecf2ad-8dd3-4888-b15c-366954675bdd",
+      "peerId": "26D7AB",
+      "hash": "0x0ce2d777",
+      "isp": "AWS",
+      "type": "VALIDATOR",
+      "status": "VALID",
+      "reputation": "45",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    },
+    {
+      "id": "24d6103d-4ba8-4206-9a09-b04fc689aa52",
+      "peerId": "C2DB18",
+      "hash": "0x5f0015dd",
+      "isp": "Cloudflare",
+      "type": "P2P_NODE",
+      "status": "VALID",
+      "reputation": "39",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    },
+    {
+      "id": "56691f72-40e0-4bb8-a513-732c8c671242",
+      "peerId": "37E9BB",
+      "hash": "0x83ddf7a2",
+      "isp": "Akamai",
+      "type": "P2P_NODE",
+      "status": "VALID",
+      "reputation": "13",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    },
+    {
+      "id": "82179637-00dc-4676-b42e-1aab69bb66e0",
+      "peerId": "FA7C3E",
+      "hash": "0x6bdce760",
+      "isp": "AWS",
+      "type": "P2P_NODE",
+      "status": "VALID",
+      "reputation": "47",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    },
+    {
+      "id": "f5727799-571c-458e-ac1e-1cf48c6ba303",
+      "peerId": "62FBF5",
+      "hash": "0xd2a42194",
+      "isp": "DigitalOcean",
+      "type": "RELAY",
+      "status": "VALID",
+      "reputation": "96",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    }
+  ],
+  "metrics": {
+    "id": "latest",
+    "threatLevel": "82",
+    "entropy": "92.4",
+    "signalStrength": "88.1",
+    "integrity": "99.9",
+    "timestamp": "2026-01-30T02:18:57.985Z"
+  },
+  "notifications": [
+    {
+      "message": "INTEL_SUBMISSION: New research protocol uploaded: fmkgm fkm, dgorgmk",
+      "type": "warning",
+      "id": "4380472d-cc43-4f81-9b8c-d7c96bcc8895",
+      "isRead": "false",
+      "timestamp": "2026-01-30T18:59:55.153Z"
+    },
+    {
+      "message": "NEW RESEARCH: fmkgm fkm, dgorgmk by Cipher_01",
+      "type": "info",
+      "id": "9fe88437-d4eb-4929-baa1-da0343139de8",
+      "isRead": "false",
+      "timestamp": "2026-01-30T18:59:55.142Z"
+    },
+    {
+      "message": "INTEL_SUBMISSION: New research protocol uploaded: mfkmgkgrkeg d erkgker gergnmer gkerkng",
+      "type": "warning",
+      "id": "83bd6886-0edb-48cf-a342-f37ff32ff762",
+      "isRead": "false",
+      "timestamp": "2026-01-30T18:58:42.247Z"
+    },
+    {
+      "message": "NEW RESEARCH: mfkmgkgrkeg d erkgker gergnmer gkerkng by Cipher_01",
+      "type": "info",
+      "id": "c45599bb-feb4-44bd-9c25-82cf16d0299e",
+      "isRead": "false",
+      "timestamp": "2026-01-30T18:58:42.239Z"
+    },
+    {
+      "message": "INTEL_SUBMISSION: New research protocol uploaded: gl[ly",
+      "type": "warning",
+      "id": "69acd08a-3816-4bbf-8b7a-5614f833404e",
+      "isRead": "false",
+      "timestamp": "2026-01-30T18:55:44.376Z"
+    },
+    {
+      "message": "NEW RESEARCH: gl[ly by Cipher_01",
+      "type": "info",
+      "id": "82bedc07-c4cd-4f4f-be87-238a023765fb",
+      "isRead": "false",
+      "timestamp": "2026-01-30T18:55:44.362Z"
+    },
+    {
+      "message": "LOCKDOWN: Global Node Isolation Initiated [Protocol 0x99]",
+      "type": "warning",
+      "id": "f7b9d8d1-bfa3-4684-bd89-5c8a2ac0d4fa",
+      "isRead": "false",
+      "timestamp": "2026-01-30T13:10:50.677Z"
+    },
+    {
+      "message": "NEW RESEARCH: D MDNKQE by Cipher_01",
+      "type": "info",
+      "id": "304ed344-4b7b-4453-a597-533bc49f4f7a",
+      "isRead": "true",
+      "timestamp": "2026-01-30T10:27:16.592Z"
+    },
+    {
+      "id": "325d7795-cbac-4242-8cc1-af9934351474",
+      "message": "High-priority threat detected in AWS",
+      "type": "alert",
+      "isRead": "true",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    },
+    {
+      "id": "bf5d905c-8e10-4d4b-a026-88439bdcd838",
+      "message": "New research submission pending review",
+      "type": "info",
+      "isRead": "true",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    },
+    {
+      "id": "424a47c0-900e-4fa7-9fac-6d0c29dc22a6",
+      "message": "Compliance report generated for Global Bank",
+      "type": "success",
+      "isRead": "true",
+      "timestamp": "2026-01-30T02:18:57.990Z"
+    }
+  ]
+}

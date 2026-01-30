@@ -24,13 +24,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (role: UserRole) => {
     if (!role) return;
-    
+
     // Mock user data based on role
     let mockUser: User;
     switch (role) {
       case "researcher":
         mockUser = { id: "r1", name: "Cipher_01", role: "researcher", avatar: "JS" };
-        setLocation("/dashboard");
+        setLocation("/");
         break;
       case "enterprise":
         mockUser = { id: "e1", name: "Acme Corp Security", role: "enterprise", avatar: "AC" };

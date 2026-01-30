@@ -89,10 +89,18 @@ app.use((req, res, next) => {
     {
       port,
       host: "0.0.0.0",
-      reusePort: true,
     },
     () => {
       log(`serving on port ${port}`);
     },
   );
+
+  httpServer.on("error", (err: any) => {
+    if (err.code === "EADDRINUSE") {
+      log(`Port ${port} is already in use. Trying another port...`);
+      httpServer.listen(0, "0.0.0.0");
+    } else {
+      log(`Server error: ${err.message}`);
+    }
+  });
 })();
