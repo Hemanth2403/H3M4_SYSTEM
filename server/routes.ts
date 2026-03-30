@@ -290,7 +290,7 @@ export async function registerRoutes(
       const verifiedIntel = globalIntel.filter(s => s.status === "verified");
 
       log(`[AUTOMATION] Step 2: Running Correlation Engine...`, "api");
-      let matches = [];
+      let matches: any[] = [];
       try {
         matches = threatEngine.matchPoliceCaseToIntelligence(policeCase, verifiedIntel);
         log(`[AUTOMATION] Found ${matches.length} matches.`, "api");
@@ -299,7 +299,7 @@ export async function registerRoutes(
       }
 
       log(`[AUTOMATION] Step 3: Running OSINT Enrichment...`, "api");
-      let osintResults = [];
+      let osintResults: any[] = [];
       try {
         // Fetch specific evidence for this case to enrich correlation
         const caseEvidence = await storage.getEvidence(id);
