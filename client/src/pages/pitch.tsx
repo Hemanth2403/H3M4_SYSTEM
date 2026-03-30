@@ -58,9 +58,9 @@ export default function PitchPage() {
         {
             type: "hero",
             title: "H3M4 Platform",
-            subtitle: "Mid Semester Presentation",
-            description: "Submitted to School of Cyber Security & Digital Forensics, National Forensic Sciences University.",
-            detailedExplanation: "Name of Student: M Hemanth naik | Guide: Dr. Ramya Shah, Assistant Professor",
+            subtitle: "Pitch Deck",
+            description: "A Collaborative Cybersecurity Framework for FinTech.",
+            detailedExplanation: "Built for Sovereign Enterprise Defense.",
             icon: Shield,
             accent: "primary",
         },
@@ -269,7 +269,7 @@ export default function PitchPage() {
                     <span className="font-heading font-bold tracking-[0.2em] text-[2.4vh]">H3M4 <span className="text-muted-foreground font-normal">VAULT</span></span>
                 </div>
                 <div className="flex items-center gap-10">
-                    <Badge variant="outline" className="text-[1.8vh] uppercase font-mono border-white/20 text-muted-foreground/80 px-4 py-1">Mid-Semester V1.0</Badge>
+                    <Badge variant="outline" className="text-[1.8vh] uppercase font-mono border-white/20 text-muted-foreground/80 px-4 py-1">Pitch Deck V1.0</Badge>
                     <button className="text-[1.8vh] text-muted-foreground hover:text-white transition-all font-mono tracking-[0.1em]" onClick={() => setLocation("/")}>[ EXIT_VAULT ]</button>
                 </div>
             </div>

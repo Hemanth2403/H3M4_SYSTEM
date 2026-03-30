@@ -54,14 +54,12 @@ export default function LandingPage() {
                     <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-10 text-base font-medium text-muted-foreground">
                         <a href="#vision" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all">Vision</a>
                         <a href="#product" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all">Product</a>
-                        <Link href="/pitch" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all cursor-pointer">Presentation</Link>
+                        <Link href="/pitch" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all cursor-pointer">Pitch Deck</Link>
+                        <Link href="/blog" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all cursor-pointer">Blog</Link>
                         <a href="#governance" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all">Trust</a>
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-6">
-                        <Link href="/auth">
-                            <Button variant="ghost" className="hidden sm:inline-flex text-sm md:text-base font-medium">Log In</Button>
-                        </Link>
                         <Link href="/auth">
                             <Button className="h-10 md:h-12 px-4 md:px-8 text-xs md:text-base font-bold bg-primary text-black hover:bg-primary/90 rounded-full shadow-lg shadow-primary/20 transition-all hover:scale-105">
                                 Access Vault
@@ -446,7 +444,8 @@ export default function LandingPage() {
                     <div className="flex flex-wrap justify-start gap-16 text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground">
                         <div className="space-y-4">
                             <div className="text-white mb-6 tracking-[1em] opacity-40">Resources</div>
-                            <Link href="/pitch" className="block hover:text-primary transition-colors text-primary font-bold">Mid-Sem Presentation</Link>
+                            <Link href="/pitch" className="block hover:text-primary transition-colors text-primary font-bold">Pitch Deck</Link>
+                            <Link href="/blog" className="block hover:text-primary transition-colors text-primary font-bold">Blog</Link>
                             <a href="#" className="block hover:text-primary transition-colors">Vision Paper</a>
                             <a href="#" className="block hover:text-primary transition-colors">Ethical Code</a>
                             <a href="#" className="block hover:text-primary transition-colors">Sector Maps</a>

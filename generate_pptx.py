@@ -12,165 +12,127 @@ def create_presentation():
     title = slide.shapes.title
     subtitle = slide.placeholders[1]
 
-    title.text = "H3M4 Ecosystem: Collaborative Cybersecurity Framework for FinTech"
+    title.text = "H3M4 Ecosystem"
     subtitle.text = (
-        "Project Presentation - Mid Semester Review\n\n"
-        "Submitted to:\n"
-        "School of Cyber Security & Digital Forensics,\n"
-        "National Forensic Sciences University\n\n"
-        "Name: M Hemanth naik\n"
-        "Enrollment: 012200300004042\n"
-        "Course: BTECH MTECH CS(CYBERSECURITY)\n\n"
-        "Guide: Dr. Ramya Shah, Assistant Professor"
+        "The Collaborative Cybersecurity Framework for FinTech\n\n"
+        "Pitch Deck\n"
+        "M Hemanth Naik"
     )
 
-    # --- Slide 2: Table of Contents ---
-    slide_layout = prs.slide_layouts[1]
-    slide = prs.slides.add_slide(slide_layout)
-    title = slide.shapes.title
-    title.text = "Table of Contents"
-    
-    body_shape = slide.placeholders[1]
-    tf = body_shape.text_frame
-    tf.text = "• Abstract"
-    p = tf.add_paragraph()
-    p.text = "• Literature Review (LR)"
-    p = tf.add_paragraph()
-    p.text = "• Motivation"
-    p = tf.add_paragraph()
-    p.text = "• Problem Statement"
-    p = tf.add_paragraph()
-    p.text = "• Project Objectives"
-    p = tf.add_paragraph()
-    p.text = "• Approach & Methodology"
-    p = tf.add_paragraph()
-    p.text = "• Implementation & Tools"
-    p = tf.add_paragraph()
-    p.text = "• Project Architecture (Graphical)"
-
-    # --- Slide 3: Abstract ---
+    # --- Slide 2: The Problem ---
     slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Abstract"
+    slide.shapes.title.text = "The Problem"
     tf = slide.placeholders[1].text_frame
-    # Abstract Slide often needs justification
-    tf.text = "H3M4 is a collaborative cybersecurity framework designed to bridge the trust gap between Security Researchers, Financial Enterprises, and Law Enforcement."
-    tf.paragraphs[0].alignment = PP_ALIGN.JUSTIFY
-    p = tf.add_paragraph()
-    p.text = "Key features include a live 'Global Signal Graph' for threat visualization, a specialized 'Breach Bot' for PII leak discovery, and an automated Intelligence-to-Enforcement pipeline."
-    p.alignment = PP_ALIGN.JUSTIFY
-    p = tf.add_paragraph()
-    p.text = "The system ensures immutable evidence handling and sector-wide 'herd immunity' against sophisticated cyber threats."
-    p.alignment = PP_ALIGN.JUSTIFY
-
-    # --- Slide 4: Literature Review - Findings & Limitations (Part 1) ---
-    slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Literature Review: Findings"
-    tf = slide.placeholders[1].text_frame
-    def add_justified(text_frame, text):
+    def add_bullet(text_frame, text):
         p = text_frame.add_paragraph()
         p.text = text
-        p.alignment = PP_ALIGN.JUSTIFY
+        p.alignment = PP_ALIGN.LEFT
         return p
 
-    add_justified(tf, "• AI-Driven Threats (2023): Research shows 11 central threats requiring 24/7 SIEM monitoring.")
-    add_justified(tf, "• Rising Incident Volume (2024): 53% surge in FinTech attacks; AI/ML is crucial for real-time detection.")
-    add_justified(tf, "• Strategic Intelligence (2025): 91% of security leaders are moving towards intelligence-guided investments.")
-    add_justified(tf, "• LLMs in SecOps: Large Language Models are automating the parsing of dark web forum data.")
+    add_bullet(tf, "• Fragmented Defense: Financial institutions fight cyber threats in extreme isolation.")
+    add_bullet(tf, "• Asymmetric Warfare: Attackers share exploits globally, while defenders hide breaches due to reputation risk.")
+    add_bullet(tf, "• Slow Forensics: Converting an attack log into actionable legal evidence takes months.")
+    add_bullet(tf, "• High Cost of Breaches: Continual ransomware and PII leaks cause billion-dollar losses annually.")
 
-    # --- Slide 5: Literature Review - Limitations ---
+    # --- Slide 3: The Solution (H3M4) ---
     slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Literature Review: Limitations"
+    slide.shapes.title.text = "Our Solution: H3M4 Ecosystem"
     tf = slide.placeholders[1].text_frame
-    add_justified(tf, "• Black Box Defense: Traditional SIEMs lack cross-sector transparency, making it hard to stop widespread campaigns.")
-    add_justified(tf, "• Operational Overhead: Moving to Zero-Trust or DORA-compliant models involves high technical debt.")
-    add_justified(tf, "• Translation Silos: Technical indicators (IOCs) are often too complex for business stakeholders to act upon.")
-    add_justified(tf, "• AI Hallucinations: Over-reliance on LLMs for hacker attribution requires human-in-the-loop validation.")
+    add_bullet(tf, "A secure, federated hub bridging Enterprises, Independent Researchers, and Law Enforcement.")
+    add_bullet(tf, "• Herd Immunity: One bank's localized breach detection instantly protects the entire network.")
+    add_bullet(tf, "• Zero-Knowledge Intel: Enterprises can anonymize and share threat signatures safely.")
+    add_bullet(tf, "• Actionable Forensics: Automated tools to wrap technical IOCs into court-ready FIRs.")
 
-    # --- Slide 6: Motivation ---
+    # --- Slide 4: How It Works ---
     slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Motivation"
+    slide.shapes.title.text = "How It Works"
     tf = slide.placeholders[1].text_frame
-    add_justified(tf, "• The 53% Incident Spike: Real-world reports of surging attacks in the financial sector.")
-    add_justified(tf, "• The 'Hacker-to-Justice' Gap: No secure bridge for ethical hackers to report directly to Law Enforcement.")
-    add_justified(tf, "• Data Silos: Need for a 'Federated Defense' where one bank's breach detection becomes every bank's protection.")
-    add_justified(tf, "• Cyber-Forensics Efficiency: Reducing the time taken to generate court-admissible evidence from months to hours.")
+    add_bullet(tf, "1. Sense (Enterprises): SIEM integrations detect anomalies & share IOCs.")
+    add_bullet(tf, "2. Discover (Researchers): Bounty hunters provide pro-active dark web intelligence.")
+    add_bullet(tf, "3. Validate (System): Automated 'Breach Bots' and reputation scoring vet the data.")
+    add_bullet(tf, "4. Enforce (Police): Validated threats are packaged for immediate legal takedown.")
 
-    # --- Slide 7: Problem Statement ---
+    # --- Slide 5: Key Capabilities ---
     slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Problem Statement"
+    slide.shapes.title.text = "Key Capabilities"
     tf = slide.placeholders[1].text_frame
-    add_justified(tf, "Critical Project Question: 'How can we create a trust-based ecosystem where rivals (banks) and external actors (researchers) collaborate to defeat shared cyber threats?'")
-    add_justified(tf, "Identified Limitations in Current Systems:")
-    add_justified(tf, "  - High Reputation Risk for banks reporting breaches anonymously.")
-    add_justified(tf, "  - Lack of integration between Researcher research and Police FIRs.")
-    add_justified(tf, "  - Massive growth of PII leaks in Telegram/Dark Web without scalable traceability.")
+    add_bullet(tf, "• Global Threat Graph: Real-time visual tracking of threat actors across the financial sector.")
+    add_bullet(tf, "• Neural Query Console: AI-driven conversational intelligence for threat hunting.")
+    add_bullet(tf, "• Automated Triage & Scoring: Instantly separating critical vulnerabilities from noise.")
+    add_bullet(tf, "• Cryptographic Chain-of-Custody: Ensuring all cyber evidence remains legally admissible.")
 
-    # --- Slide 8: Project Objectives ---
+    # --- Slide 6: Market Opportunity ---
     slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Project Objectives"
+    slide.shapes.title.text = "Market Opportunity"
     tf = slide.placeholders[1].text_frame
-    add_justified(tf, "1. Develop Multi-Role Hub: Create specialized workspaces for Researchers (Sources), Enterprises (Sensors), and Police (Enforcers).")
-    add_justified(tf, "2. Build Global Threat Graph: Implement real-time visualization of Actors, Vectors, and Targets using graph-based rendering.")
-    add_justified(tf, "3. Automate Forensic Alignment: Enabling instant attachment of verified technical intelligence to legal case files (FIRs).")
+    add_bullet(tf, "• Target Market: Global FinTech, Banking, and Government Law Enforcement.")
+    add_bullet(tf, "• The Gap: Current Threat Intel Platforms (TIPs) are B2B only and exclude law enforcement & public researchers.")
+    add_bullet(tf, "• Urgency: 53% YoY surge in specialized FinTech cyberattacks and new regulatory pressures (e.g., DORA compliance).")
 
-    # --- Slide 9: Approach & Methodology ---
+    # --- Slide 7: Business Model ---
     slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Approach & Methodology"
+    slide.shapes.title.text = "Business Model"
     tf = slide.placeholders[1].text_frame
-    add_justified(tf, "• Role-Based Access Control (RBAC): Ensuring strict boundary separation and data privacy.")
-    add_justified(tf, "• Zero-Knowledge Principles: Allowing enterprises to share attack signatures without exposing user PII.")
-    add_justified(tf, "• Reactive & Proactive Hybrid: Combining live SIEM log analysis (Reactive) with vulnerability research (Proactive).")
-    add_justified(tf, "• Immutable Chain of Custody: Ensuring all evidence sharing is cryptographically logged.")
+    add_bullet(tf, "• B2B SaaS for Enterprises: Tiered subscriptions based on log ingestion limits and early-warning alerts.")
+    add_bullet(tf, "• Government Defense Contracts: Delivering the overarching intelligence feed to National Cyber Agencies.")
+    add_bullet(tf, "• Bug Bounty Commission: Percentage fee on payouts routed to Independent Researchers.")
 
-    # --- Slide 10: Implementation & Tools ---
+    # --- Slide 8: Competitive Advantage ---
     slide = prs.slides.add_slide(prs.slide_layouts[1])
-    slide.shapes.title.text = "Implementation & Tools"
+    slide.shapes.title.text = "Competitive Advantage"
     tf = slide.placeholders[1].text_frame
-    add_justified(tf, "• Frontend: React.js, TypeScript, Tailwind CSS, Framer Motion.")
-    add_justified(tf, "• Backend: Node.js, Express, Passport.js, React Query.")
-    add_justified(tf, "• Analysis: Wazuh/SIEM Integration, 'Breach Bot' Python wrappers.")
-    add_justified(tf, "• Data Layer: Database simulation for high-performance demonstration.")
-    add_justified(tf, "• Lab Setup: Multi-node development environment for cross-role simulation.")
+    add_bullet(tf, "• Traditional SIEMs (Splunk, Sentinel): Reactive & Isolated.")
+    add_bullet(tf, "• Threat Feeds (Crowdstrike, Mandiant): Expensive & Proprietary.")
+    add_bullet(tf, "• Bug Bounties (HackerOne): Don't interface with active Enterprise defense networks.")
+    add_bullet(tf, "• H3M4 combines all three: Proactive intelligence + Reactive defense + Direct Legal action.")
 
-    # --- Slide 11: Project Architecture (Graphical) ---
+    # --- Slide 9: Traction & Milestones ---
+    slide = prs.slides.add_slide(prs.slide_layouts[1])
+    slide.shapes.title.text = "Traction & Milestones"
+    tf = slide.placeholders[1].text_frame
+    add_bullet(tf, "• Q1: Core architecture complete (Multi-tenant, Role Based Access).")
+    add_bullet(tf, "• Q2: Pilot deployment with simulated Enterprise nodes and Police Dashboard.")
+    add_bullet(tf, "• Q3 Goal: Integrate live Wazuh/SIEM feeds & onboard beta FinTech partners.")
+    add_bullet(tf, "• Q4 Goal: Launch production 'Breach Bot' pipeline for active legal cases.")
+
+    # --- Slide 10: Architecture Overview ---
     slide = prs.slides.add_slide(prs.slide_layouts[6]) # Blank layout
     title_box = slide.shapes.add_textbox(Inches(0.5), Inches(0.5), Inches(9), Inches(1))
-    title_box.text_frame.text = "Project Architecture: Collaborative Ecosystem Cycle"
+    title_box.text_frame.text = "Collaborative Flow"
     
-    # Simple diagram using shapes
     def add_node(left, top, text, color):
-        shape = slide.shapes.add_shape(6, Inches(left), Inches(top), Inches(2), Inches(0.8)) # 6 is RECTANGLE
+        shape = slide.shapes.add_shape(6, Inches(left), Inches(top), Inches(2), Inches(0.8))
         shape.fill.solid()
         shape.fill.fore_color.rgb = color
         shape.text = text
         shape.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
         return shape
 
-    # Define nodes
-    researcher = add_node(4, 1.5, "Researcher\n(Intelligence Source)", RGBColor(0, 102, 204))
-    admin = add_node(4, 3.0, "System Admin\n(Validator/Governor)", RGBColor(128, 0, 128))
-    enterprise = add_node(1.5, 4.5, "Enterprise Node\n(Defender)", RGBColor(0, 153, 0))
-    police = add_node(6.5, 4.5, "Police Command\n(Enforcer)", RGBColor(204, 0, 0))
+    res = add_node(2, 2, "Researchers\n(Offense Intel)", RGBColor(0, 102, 204))
+    ent = add_node(2, 4, "Enterprises\n(Defense Logs)", RGBColor(0, 153, 0))
+    hub = add_node(5, 3, "H3M4 Core\n(Validation)", RGBColor(128, 0, 128))
+    pol = add_node(8, 3, "Police\n(Enforcement)", RGBColor(204, 0, 0))
 
-    # Add arrows (very basic representation)
-    # Researcher -> Admin
-    prs.slides[10].shapes.add_connector(2, researcher.left + Inches(1), researcher.top + Inches(0.8), admin.left + Inches(1), admin.top) # STRAIGHT arrow
-    
-    # Admin -> Enterprise & Admin -> Police
-    prs.slides[10].shapes.add_connector(2, admin.left + Inches(0.5), admin.top + Inches(0.8), enterprise.left + Inches(1), enterprise.top)
-    prs.slides[10].shapes.add_connector(2, admin.left + Inches(1.5), admin.top + Inches(0.8), police.left + Inches(1), police.top)
+    prs.slides[9].shapes.add_connector(2, res.left + Inches(2), res.top + Inches(0.4), hub.left, hub.top + Inches(0.4))
+    prs.slides[9].shapes.add_connector(2, ent.left + Inches(2), ent.top + Inches(0.4), hub.left, hub.top + Inches(0.4))
+    prs.slides[9].shapes.add_connector(2, hub.left + Inches(2), hub.top + Inches(0.4), pol.left, pol.top + Inches(0.4))
 
-    # Enterprise (Victim/Evidence) -> Police (FIR Case)
-    prs.slides[10].shapes.add_connector(2, enterprise.left + Inches(2), enterprise.top + Inches(0.4), police.left, police.top + Inches(0.4))
+    # --- Slide 11: Call to Action / The Ask ---
+    slide = prs.slides.add_slide(prs.slide_layouts[1])
+    slide.shapes.title.text = "The Ask & Next Steps"
+    tf = slide.placeholders[1].text_frame
+    add_bullet(tf, "• Looking for Strategic Partnerships with Forward-thinking Financial Institutions.")
+    add_bullet(tf, "• Seeking Pilot engagements with Regional Cybercrime Cells.")
+    add_bullet(tf, "• Target: Seed Funding ($X Million) to scale infrastructure and go-to-market efforts.")
 
-    # --- Slide 12: Thank You ---
+    # --- Slide 12: Contact ---
     slide = prs.slides.add_slide(prs.slide_layouts[0])
-    slide.shapes.title.text = "Thank You!"
-    slide.placeholders[1].text = "Questions & Suggestions are welcome."
+    slide.shapes.title.text = "Join the Ecosystem"
+    slide.placeholders[1].text = "Contact: M Hemanth Naik\nEmail: [Insert Email]\nLet's Build the Future of Federated FinTech Defense."
 
-    # Save the presentation
-    prs.save("H3M4_Project_Presentation.pptx")
-    print("Presentation generated successfully!")
+    prs.save("H3M4_Pitch_Deck.pptx")
+    print("Pitch Deck generated successfully as H3M4_Pitch_Deck.pptx!")
 
 if __name__ == "__main__":
     create_presentation()
+

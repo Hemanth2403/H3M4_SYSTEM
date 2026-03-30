@@ -25,6 +25,7 @@ import PoliceCaseAnalysis from "@/pages/police/case-analysis";
 import EvidenceVault from "@/pages/police/evidence-store";
 import LandingPage from "@/pages/landing";
 import PitchPage from "@/pages/pitch";
+import BlogPage from "@/pages/blog";
 import SharedHome from "@/pages/home";
 import ResearchActivity from "@/pages/researcher/activity";
 import TechnicalCase from "@/pages/technical-case";
@@ -53,6 +54,7 @@ function Router() {
       {/* Public Routes (Standalone) */}
       <Route path="/" component={LandingPage} />
       <Route path="/pitch" component={PitchPage} />
+      <Route path="/blog" component={BlogPage} />
       <Route path="/auth" component={AuthPage} />
 
       {/* All other platform routes wrapped in Layout */}
