@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/auth-context";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import {
     Shield,
     Activity,
@@ -13,7 +14,11 @@ import {
     Network,
     Search,
     History as HistoryIcon,
-    Fingerprint
+    Fingerprint,
+    Scale,
+    ShieldCheck,
+    Building2,
+    Gavel
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -60,6 +65,17 @@ function ActionCard({ title, desc, icon: Icon, href, btnText, variant = "default
 export default function SharedHome() {
     const { user } = useAuth();
 
+    // Fetch ecosystem data for live stats
+    const { data: submissions = [] } = useQuery<any[]>({
+        queryKey: ["/api/submissions"],
+    });
+    const { data: cases = [] } = useQuery<any[]>({
+        queryKey: ["/api/police/cases"],
+    });
+
+    const verifiedThreats = submissions.filter(s => s.status === "verified");
+    const activeInvestigations = cases.filter(c => c.status !== "closed");
+
     if (!user) return null;
 
     return (
@@ -88,38 +104,40 @@ export default function SharedHome() {
             {/* Global Intelligence Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
-                    label="Active Threat Signals"
-                    value="18"
-                    icon={Activity}
-                    trend="+3 since last sync"
+                    label="Verified Threat Signals"
+                    value={verifiedThreats.length.toString()}
+                    icon={Shield}
+                    trend={`${submissions.length - verifiedThreats.length} pending review`}
                     trendUp={true}
                     delay={0.1}
                 />
                 <StatCard
-                    label="Passive Risk Indicators"
-                    value="47"
-                    icon={Zap}
-                    trend="+12 emerging"
+                    label="Active Investigations"
+                    value={activeInvestigations.length.toString()}
+                    icon={Gavel}
+                    trend="Syncing with LEO nodes"
                     trendUp={true}
                     delay={0.2}
                 />
                 <StatCard
-                    label="Sectors Monitored"
-                    value="6"
+                    label="Ecosystem Nodes"
+                    value="12"
                     icon={Network}
-                    trend="Optimal Coverage"
+                    trend="Consensus: Healthy"
                     trendUp={true}
                     delay={0.3}
                 />
                 <StatCard
-                    label="Intelligence Confidence"
-                    value="HIGH"
+                    label="Ledger Confidence"
+                    value="99.8%"
                     icon={Database}
-                    trend="Verified @ 92%"
+                    trend="SHA-3 Immutable"
                     trendUp={true}
                     delay={0.4}
                 />
             </div>
+
+
 
             {/* Role-Specific Action Grids */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -206,12 +224,40 @@ export default function SharedHome() {
                         />
                     </>
                 )}
+
+                {user.role === "police" && (
+                    <>
+                        <ActionCard
+                            title="Investigation Control"
+                            desc="Manage active FIRs, case files, and ecosystem evidence chains."
+                            icon={LayoutDashboard}
+                            href="/police"
+                            btnText="Police Dashboard"
+                            variant="primary"
+                        />
+                        <ActionCard
+                            title="Strategic Analysis"
+                            desc="Build court-ready cases with H3M4 ecosystem correlation."
+                            icon={Scale}
+                            href="/police/analysis"
+                            btnText="Case Analysis"
+                            variant="secondary"
+                        />
+                        <ActionCard
+                            title="Forensic Evidence"
+                            desc="Access the immutable ledger-verified digital artifact store."
+                            icon={Database}
+                            href="/police/evidence"
+                            btnText="Evidence Vault"
+                        />
+                    </>
+                )}
             </div>
 
             {/* Featured Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <Card className="lg:col-span-2 overflow-hidden bg-primary/2 hover:border-primary/40 transition-all group relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                     <CardHeader className="p-8 pb-4">
                         <div className="flex items-center gap-3 mb-4">
                             <Badge className="bg-primary/20 text-primary border-primary/30 uppercase text-[10px] tracking-widest">Priority Protocol</Badge>
@@ -237,65 +283,91 @@ export default function SharedHome() {
                     <div className="absolute top-0 left-0 w-full h-[1px] bg-white/5" />
                     <CardHeader>
                         <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-primary" /> System Broadcast
+                            <Activity className="h-4 w-4 text-primary" /> Unified Activity Ledger
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {[
-                            { text: "B2R Protocol v2.5 finalized", time: "2h ago" },
-                            { text: "New validator node online: FRA-01", time: "5h ago" },
-                            { text: "Governance meeting: 14:00 UTC", time: "Today" }
-                        ].map((update, i) => (
-                            <div key={i} className="flex justify-between items-center group cursor-default">
-                                <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">{update.text}</span>
-                                <span className="text-[9px] font-mono text-muted-foreground/50">{update.time}</span>
-                            </div>
-                        ))}
+                            ...submissions.slice(0, 3).map(s => ({ text: `New Research: ${s.title.substring(0, 25)}...`, time: "Verified", icon: Shield, color: "text-primary" })),
+                            ...cases.slice(0, 2).map(c => ({ text: `New FIR: ${c.firNumber}`, time: "Active", icon: Gavel, color: "text-blue-400" }))
+                        ].length > 0 ? (
+                            [
+                                ...submissions.slice(0, 3).map(s => ({ text: `New Research: ${s.title.substring(0, 25)}...`, time: "Verified", icon: Shield, color: "text-primary" })),
+                                ...cases.slice(0, 2).map(c => ({ text: `New FIR: ${c.firNumber}`, time: "Active", icon: Gavel, color: "text-blue-400" }))
+                            ].map((update, i) => (
+                                <div key={i} className="flex justify-between items-center group cursor-default">
+                                    <div className="flex items-center gap-2">
+                                        <update.icon className={cn("h-3 w-3", update.color)} />
+                                        <span className="text-[10px] text-muted-foreground group-hover:text-foreground transition-colors truncate max-w-[150px]">{update.text}</span>
+                                    </div>
+                                    <span className="text-[9px] font-mono text-muted-foreground/50">{update.time}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-[10px] text-muted-foreground italic">Syncing with H3M4 ledger nodes...</p>
+                        )}
                     </CardContent>
                     <div className="p-6 pt-0">
                         <Link href="/ledger">
                             <Button variant="ghost" className="w-full justify-between text-[10px] font-bold font-mono tracking-widest text-muted-foreground hover:text-primary p-0 h-auto">
-                                VIEW GLOBAL LEDGER <ArrowRight className="h-3 w-3" />
+                                VIEW FULL AUDIT TRAIL <ArrowRight className="h-3 w-3" />
                             </Button>
                         </Link>
                     </div>
                 </Card>
 
-                {/* Instant Verification Widget */}
-                <Card className="bg-primary/5 border-primary/20 overflow-hidden relative group">
-                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <Fingerprint className="h-16 w-16 text-primary" />
-                    </div>
+                {/* Trending Intelligence (CVE-Details Style) */}
+                <Card className="bg-card/20 border-white/10 backdrop-blur-sm relative flex flex-col overflow-hidden lg:col-span-1">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-                            <Shield className="h-3 w-3" /> Instant Ledger Check
+                        <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <Activity className="h-4 w-4 text-primary" /> Trending Intel
+                            </div>
+                            <Badge variant="outline" className="text-[8px] border-primary/20 text-primary">LIVE_FEED</Badge>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            <label className="text-[9px] text-muted-foreground uppercase font-mono">Input Document/Intelligence Hash</label>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    placeholder="0x7f83... (SHA-256)"
-                                    className="flex-1 bg-black/40 border border-white/10 rounded px-2 py-1 text-[10px] font-mono focus:border-primary/50 outline-none"
-                                />
-                                <Button size="sm" onClick={() => {
-                                    toast.info("Verifying Hash Ancestry...", {
-                                        description: "Tracing Merkle inclusion in Global Shard #882."
-                                    });
-                                    setTimeout(() => {
-                                        toast.success("Integrity Confirmed", {
-                                            description: "Hash matches validated intelligence anchored on 2026-01-30."
-                                        });
-                                    }, 2000);
-                                }} className="bg-primary text-black font-bold h-7 px-3">VERIFY</Button>
+                    <CardContent className="space-y-4 p-4 pt-2">
+                        {verifiedThreats.length > 0 ? verifiedThreats
+                            .sort((a, b) => parseFloat(b.cvssScore || "0") - parseFloat(a.cvssScore || "0"))
+                            .slice(0, 4)
+                            .map((intel, idx) => (
+                                <div key={idx} className="p-3 rounded-xl bg-white/5 border border-white/5 hover:border-primary/20 transition-all group flex flex-col gap-2">
+                                    <div className="flex justify-between items-start">
+                                        <span className="text-[10px] font-mono font-bold text-primary">{intel.cveId || `H3M4-${new Date().getFullYear()}-${intel.id.substring(0, 4)}`}</span>
+                                        <div className="flex items-center gap-1">
+                                            <div className="text-[8px] text-muted-foreground uppercase">CVSS</div>
+                                            <span className={cn("text-[10px] font-black",
+                                                parseFloat(intel.cvssScore || "0") >= 9 ? "text-destructive" :
+                                                    parseFloat(intel.cvssScore || "0") >= 7 ? "text-orange-500" :
+                                                        parseFloat(intel.cvssScore || "0") >= 4 ? "text-yellow-500" : "text-emerald-500"
+                                            )}>{intel.cvssScore || "N/A"}</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs font-bold truncate group-hover:text-primary transition-colors">{intel.title}</div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-1.5 flex-1">
+                                            <div className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
+                                                <div className="h-full bg-primary" style={{ width: `${parseFloat(intel.epssScore || "0") * 100}%` }} />
+                                            </div>
+                                            <span className="text-[9px] font-mono text-muted-foreground">{intel.epssScore || "0.00"}</span>
+                                        </div>
+                                        <div className="text-[8px] text-muted-foreground uppercase font-bold ml-4">EPSS</div>
+                                    </div>
+                                </div>
+                            )) : (
+                            <div className="text-center py-6">
+                                <p className="text-[10px] text-muted-foreground">No trending intelligence reported yet.</p>
                             </div>
-                        </div>
-                        <p className="text-[8px] text-muted-foreground leading-relaxed">
-                            Verify the provenance of any document against our immutable record.
-                        </p>
+                        )
+                        }
                     </CardContent>
+                    <div className="p-4 pt-0">
+                        <Link href="/registry">
+                            <Button variant="ghost" className="w-full justify-between text-[10px] font-bold font-mono tracking-widest text-muted-foreground hover:text-primary p-0 h-auto">
+                                VIEW GLOBAL REGISTRY <ArrowRight className="h-3 w-3" />
+                            </Button>
+                        </Link>
+                    </div>
                 </Card>
             </div>
 

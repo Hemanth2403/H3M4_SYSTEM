@@ -127,9 +127,9 @@ export default function MissionEngine() {
     const [activeMissions, setActiveMissions] = useState(mockMissions);
     const [selectedMission, setSelectedMission] = useState<any>(null);
     const [isBriefOpen, setIsBriefOpen] = useState(false);
-    const [, setLocation] = useLocation();
+    const [location, setLocation] = useLocation();
 
-    // Auto-open brief if ID is in URL
+    // Auto-open brief if ID is in URL or changes
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const missionId = params.get('id');
@@ -140,7 +140,7 @@ export default function MissionEngine() {
                 setIsBriefOpen(true);
             }
         }
-    }, []);
+    }, [location]);
 
     const startMission = (id: string) => {
         toast.success(`Mission ${id} protocol initiated`, {

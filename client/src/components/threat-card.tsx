@@ -36,6 +36,7 @@ interface ThreatCardProps {
   score: number;
   date: string;
   author: string;
+  authorTier?: string;
   description?: string;
   impact?: string;
   mitigation?: string;
@@ -48,6 +49,7 @@ export function ThreatCard({
   score,
   date,
   author,
+  authorTier = "ACTIVE",
   description = "Detailed intelligence profile pending decryption. Initial assessment indicates a potential bypass vector in the middleware authentication layer.",
   impact = "High: Compromise of user sessions and potential administrative takeover.",
   mitigation = "1. Update core framework to v4.2.0. 2. Implement strict Content Security Policy (CSP). 3. Audit all JWT signature verification logic."
@@ -114,7 +116,16 @@ export function ThreatCard({
             <div className="h-6 w-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center text-[10px] font-bold">
               {author.substring(0, 2).toUpperCase()}
             </div>
-            <span className="text-[10px] text-muted-foreground">by {author}</span>
+            <div className="flex flex-col">
+              <span className="text-[10px] text-muted-foreground leading-none mb-0.5">by {author}</span>
+              <span className={cn(
+                "text-[7px] font-bold px-1 rounded-sm w-fit",
+                authorTier === "ELITE" ? "bg-primary/20 text-primary" :
+                  authorTier === "ZERO-DAY-EXPERT" ? "bg-purple-500/20 text-purple-400" : "bg-white/5 text-muted-foreground"
+              )}>
+                {authorTier}
+              </span>
+            </div>
           </div>
           <button
             onClick={handleViewIntel}
@@ -150,7 +161,7 @@ export function ThreatCard({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <div className="p-3 rounded-lg bg-white/5 border border-white/5 text-center">
                 <div className="text-[9px] font-bold text-muted-foreground uppercase mb-1">Risk Score</div>
                 <div className={cn("text-xl font-bold font-mono", scoreColor(score))}>{score}</div>

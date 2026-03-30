@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,12 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
-import { Upload, ShieldCheck, AlertTriangle } from "lucide-react";
+import { insertSubmissionSchema } from "@shared/schema";
+import { Badge } from "@/components/ui/badge";
+import { Bot, Loader2, Upload, ShieldCheck, AlertTriangle } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import { insertSubmissionSchema } from "@shared/schema";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   title: z.string().min(10, {
@@ -39,6 +41,13 @@ const formSchema = z.object({
   }),
 });
 
+interface AIAnalysisResult {
+  severity: "critical" | "high" | "medium" | "low";
+  impact: string;
+  affected: string;
+  score: number;
+}
+
 export default function SubmitResearch() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
@@ -56,6 +65,41 @@ export default function SubmitResearch() {
       agreement: false,
     },
   });
+
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiResult, setAiResult] = useState<AIAnalysisResult | null>(null);
+
+  const handleAIAnalyze = () => {
+    const description = form.getValues("description");
+    if (description.length < 50) {
+      toast.error("Insufficient Data", {
+        description: "Please provide at least 50 characters of technical description for the AI to analyze."
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
+    // Simulate AI analysis delay
+    setTimeout(() => {
+      const result: AIAnalysisResult = {
+        severity: description.toLowerCase().includes("bypass") || description.toLowerCase().includes("dump") ? "critical" : "high",
+        impact: "Potential compromise of user sessions and sensitive PII leak via unprotected endpoint vectors.",
+        affected: "Principal API Gateway / User Session Middleware / Redis Cache Layer",
+        score: Math.floor(Math.random() * 20) + 75
+      };
+
+      setAiResult(result);
+      form.setValue("severity", result.severity);
+      form.setValue("impact_analysis", result.impact);
+      form.setValue("affected_systems", result.affected);
+      setIsAnalyzing(false);
+
+      toast.success("AI Analysis Complete", {
+        description: `Estimated Severity: ${result.severity.toUpperCase()} | Threat Score: ${result.score}`,
+        icon: <Bot className="h-4 w-4 text-primary" />
+      });
+    }, 2500);
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -206,16 +250,41 @@ export default function SubmitResearch() {
                 <FormItem>
                   <FormLabel>Technical Description & Impact</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Describe the vulnerability, how to reproduce it, and its potential business impact..."
-                      className="min-h-[150px] bg-background/50 border-white/10 font-mono text-sm"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Textarea
+                        placeholder="Describe the vulnerability, how to reproduce it, and its potential business impact..."
+                        className="min-h-[150px] bg-background/50 border-white/10 font-mono text-sm pr-12"
+                        {...field}
+                      />
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={handleAIAnalyze}
+                        disabled={isAnalyzing}
+                        className="absolute right-2 bottom-2 text-primary hover:bg-primary/10 h-8 w-8"
+                        title="AI Analysis"
+                      >
+                        {isAnalyzing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bot className="h-4 w-4" />}
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {aiResult && (
+              <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 animate-in slide-in-from-top-2 duration-500">
+                <div className="flex items-center justify-between mb-3 text-xs font-bold uppercase tracking-widest text-primary">
+                  <span className="flex items-center gap-2"><Bot className="h-4 w-4" /> AI Predictive Verdict</span>
+                  <Badge className="bg-primary/20 text-primary border-primary/20">H3M4-SCORE: {aiResult.score}</Badge>
+                </div>
+                <div className="text-[10px] text-muted-foreground leading-relaxed italic">
+                  "Based on technical patterns, this finding aligns with <span className="text-white">Exploit-Class A</span> vectors. Suggesting Critical priority for immediate validator consensus."
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField

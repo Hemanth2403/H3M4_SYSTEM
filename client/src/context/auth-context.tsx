@@ -1,18 +1,18 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useLocation } from "wouter";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { User as SelectUser, InsertUser } from "@shared/schema";
+import { toast } from "sonner";
 
-type UserRole = "researcher" | "enterprise" | "admin" | null;
-
-interface User {
-  id: string;
-  name: string;
-  role: UserRole;
-  avatar: string;
-}
+type User = SelectUser & {
+  // Add any extra fields if needed
+};
 
 interface AuthContextType {
   user: User | null;
-  login: (role: UserRole) => void;
+  isLoading: boolean;
+  login: (data: any) => Promise<void>;
+  register: (data: InsertUser) => Promise<void>;
   logout: () => void;
 }
 
@@ -20,39 +20,78 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [, setLocation] = useLocation();
 
-  const login = (role: UserRole) => {
-    if (!role) return;
-
-    // Mock user data based on role
-    let mockUser: User;
-    switch (role) {
-      case "researcher":
-        mockUser = { id: "r1", name: "Cipher_01", role: "researcher", avatar: "JS" };
-        setLocation("/");
-        break;
-      case "enterprise":
-        mockUser = { id: "e1", name: "Acme Corp Security", role: "enterprise", avatar: "AC" };
-        setLocation("/intel");
-        break;
-      case "admin":
-        mockUser = { id: "a1", name: "H3M4 Admin", role: "admin", avatar: "AD" };
-        setLocation("/admin/review");
-        break;
-      default:
-        return;
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await fetch("/api/user", { credentials: "include" });
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      } finally {
+        setIsLoading(false);
+      }
     }
-    setUser(mockUser);
+    fetchUser();
+  }, []);
+
+  const login = async (data: any) => {
+    try {
+      const res = await apiRequest("POST", "/api/login", data);
+      const userData = await res.json();
+      setUser(userData);
+      toast.success(`Welcome back, ${userData.name}!`);
+
+      // Redirect based on role
+      if (userData.role === "admin") setLocation("/admin/review");
+      else if (userData.role === "police") setLocation("/police");
+      else setLocation("/home");
+
+      queryClient.invalidateQueries();
+    } catch (err: any) {
+      toast.error("Login failed", { description: err.message });
+      throw err;
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    setLocation("/auth");
+  const register = async (data: InsertUser) => {
+    try {
+      const res = await apiRequest("POST", "/api/register", data);
+      const userData = await res.json();
+      setUser(userData);
+      toast.success(`Account created, welcome ${userData.name}!`);
+
+      // Redirect based on role
+      if (userData.role === "admin") setLocation("/admin/review");
+      else if (userData.role === "police") setLocation("/police");
+      else setLocation("/home");
+
+      queryClient.invalidateQueries();
+    } catch (err: any) {
+      toast.error("Registration failed", { description: err.message });
+      throw err;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await apiRequest("POST", "/api/logout");
+      setUser(null);
+      queryClient.clear();
+      toast.info("Logged out successfully");
+      setLocation("/auth");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

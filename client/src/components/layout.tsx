@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Shield, Activity, FileText, User, Search, Bell, Menu, Target, LogOut, Lock, Zap, Home, LayoutDashboard, Eye, X, History as HistoryIcon, Database, Radio } from "lucide-react";
+import { Shield, Activity, FileText, User, Search, Bell, Menu, Target, LogOut, Lock, Zap, Home, LayoutDashboard, Eye, X, History as HistoryIcon, Database, Radio, Scale, Fingerprint, AlertTriangle, Building2, LineChart, ShieldCheck, Users, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
 import heroBg from '@assets/generated_images/abstract_cyberpunk_security_background.png';
 import { useAuth } from "@/context/auth-context";
@@ -22,12 +22,13 @@ import { formatDistanceToNow } from "date-fns";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { data: notifications = [] } = useQuery<Notification[]>({
     queryKey: ["/api/notifications"],
     refetchInterval: 5000,
+    enabled: !!user,
   });
 
   const markReadMutation = useMutation({
@@ -47,43 +48,77 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [location]);
 
   const getNavItems = () => {
-    const common = [
-      { icon: Home, label: "Platform Home", href: "/" },
-      { icon: Activity, label: "Intel Feed", href: "/intel" },
-      { icon: Radio, label: "War Room (CDOC)", href: "/cdoc" },
-    ];
-
+    // ADMIN NAVIGATION - Full platform oversight
     if (user?.role === 'admin') {
       return [
-        ...common,
-        { icon: Lock, label: "Review Queue", href: "/admin/review" },
+        { icon: Home, label: "Platform Home", href: "/home" },
         { icon: LayoutDashboard, label: "System Dashboard", href: "/dashboard" },
-        { icon: Database, label: "Evidence Store", href: "/admin/logs" },
+        { icon: Radio, label: "War Room (CDOC)", href: "/cdoc" },
+        { icon: Lock, label: "Review Queue", href: "/admin/review" },
         { icon: Shield, label: "Intel Registry", href: "/admin/registry" },
+        { icon: Users, label: "Researcher Management", href: "/admin/researchers" },
+        { icon: Building2, label: "Enterprise Management", href: "/admin/enterprises" },
+        { icon: ShieldCheck, label: "Compliance Monitor", href: "/admin/compliance" },
+        { icon: Database, label: "Evidence Store", href: "/admin/logs" },
+        { icon: Activity, label: "Threat Graph", href: "/admin/graph" },
       ];
     }
 
+    // POLICE NAVIGATION - Investigation & Evidence focus
+    if (user?.role === 'police') {
+      return [
+        { icon: Home, label: "Platform Home", href: "/home" },
+        { icon: Scale, label: "Police Dashboard", href: "/police" },
+        { icon: Activity, label: "Intel Feed", href: "/intel" },
+        { icon: Database, label: "Evidence Vault", href: "/police/evidence" },
+        { icon: AlertTriangle, label: "Case Analysis", href: "/police/analysis" },
+        { icon: User, label: "My Profile", href: "/profile" },
+      ];
+    }
+
+    // ENTERPRISE NAVIGATION - Corporate security & risk management
     if (user?.role === 'enterprise') {
       return [
-        ...common,
+        { icon: Home, label: "Platform Home", href: "/home" },
         { icon: LayoutDashboard, label: "Risk Dashboard", href: "/dashboard" },
-        { icon: Target, label: "Platform Status", href: "/mission" },
-        { icon: User, label: "Company Profile", href: "/profile" },
+        { icon: Network, label: "Wazuh Infrastructure", href: "/enterprise/infrastructure" },
+        { icon: Radio, label: "War Room (CDOC)", href: "/cdoc" },
+        { icon: Activity, label: "Intel Feed", href: "/intel" },
+        { icon: AlertTriangle, label: "Threat Monitor", href: "/technical-case" },
+        { icon: LineChart, label: "Analytics", href: "/ledger" },
+        { icon: ShieldCheck, label: "Compliance", href: "/admin/compliance" },
+        { icon: Building2, label: "Company Profile", href: "/profile" },
       ];
     }
 
-    // Default / Researcher
+    // RESEARCHER NAVIGATION - Research & submission focus
     return [
-      ...common,
+      { icon: Home, label: "Platform Home", href: "/home" },
+      { icon: LayoutDashboard, label: "My Dashboard", href: "/dashboard" },
+      { icon: FileText, label: "Submit Research", href: "/submit" },
+      { icon: Activity, label: "Intel Feed", href: "/intel" },
       { icon: HistoryIcon, label: "Research Activity", href: "/activity" },
       { icon: Zap, label: "Test Missions", href: "/missions" },
-      { icon: FileText, label: "Submit Research", href: "/submit" },
-      { icon: LayoutDashboard, label: "My Dashboard", href: "/dashboard" },
+      { icon: Target, label: "Mission Status", href: "/mission" },
       { icon: User, label: "My Profile", href: "/profile" },
     ];
   };
 
   const navItems = getNavItems();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Zap className="h-12 w-12 text-primary animate-pulse" />
+          <div className="w-48 h-1 bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-primary animate-[progress_2s_ease-in-out_infinite]" style={{ width: '40%' }} />
+          </div>
+          <p className="text-[10px] font-mono text-muted-foreground animate-pulse">AUTHENTICATING_SESSION...</p>
+        </div>
+      </div>
+    );
+  }
 
   // If no user, show simple layout or redirect (handled by App.tsx)
   if (!user) return <>{children}</>;
@@ -116,10 +151,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="p-6 border-b border-sidebar-border">
-          <Link href="/auth" className="flex items-center gap-2 text-primary cursor-pointer hover:opacity-80 transition-opacity">
+          <div
+            onClick={() => logout()}
+            className="flex items-center gap-2 text-primary cursor-pointer hover:opacity-80 transition-opacity"
+            title="Quick Disconnect (Switch Role)"
+          >
             <Shield className="h-8 w-8" />
             <h1 className="text-xl font-heading font-bold tracking-wider">H3M4<span className="text-foreground/70 text-sm font-normal ml-1">VAULT</span></h1>
-          </Link>
+          </div>
           {/* Close button for mobile */}
           <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-muted-foreground hover:text-foreground">
             <X className="h-6 w-6" />
@@ -272,7 +311,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <DropdownMenuContent align="end" className="w-56 border-white/10 bg-sidebar/95 backdrop-blur-md">
                 <DropdownMenuLabel className="flex flex-col gap-1">
                   <span className="text-sm font-bold">{user.name}</span>
-                  <Badge variant="outline" className="w-fit text-[9px] h-4 uppercase tracking-tighter border-primary/30 text-primary bg-primary/5">{user.role} ACCESS</Badge>
+                  <div className="flex flex-col gap-1.5 mt-0.5">
+                    <Badge variant="outline" className="w-fit text-[9px] h-4 uppercase tracking-tighter border-primary/30 text-primary bg-primary/5">{user.role} ACCESS</Badge>
+                    <div className="flex items-center gap-1.5 text-[7px] font-mono text-muted-foreground/50 border border-white/5 bg-black/20 px-1.5 py-0.5 rounded">
+                      <Lock className="h-2 w-2" />
+                      <span className="truncate">{user.securityKey}</span>
+                    </div>
+                  </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-white/5" />
                 <Link href="/profile">
@@ -299,7 +344,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Scrollable Area */}
-        <div className="flex-1 overflow-auto p-6 md:p-8">
+        <div className="flex-1 overflow-auto p-4 md:p-8">
           {children}
         </div>
       </main>

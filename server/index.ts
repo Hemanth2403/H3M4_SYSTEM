@@ -2,8 +2,10 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { log } from "./utils";
 
-const app = express();
+export { log };
+export const app = express();
 const httpServer = createServer(app);
 
 declare module "http" {
@@ -21,17 +23,6 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
-
-export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
-}
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -60,7 +51,15 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  const { setupAuth } = await import("./auth");
+  setupAuth(app);
   await registerRoutes(httpServer, app);
+
+  // Catch-all for unmatched /api routes to prevent Vite HTML fallthrough
+  app.use("/api/*", (req, res) => {
+    log(`404 Not Found: ${req.method} ${req.originalUrl}`, "api");
+    res.status(404).json({ message: `API endpoint ${req.method} ${req.originalUrl} not found` });
+  });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -70,9 +69,6 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
@@ -80,27 +76,16 @@ app.use((req, res, next) => {
     await setupVite(httpServer, app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || "5000", 10);
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-    },
-    () => {
-      log(`serving on port ${port}`);
-    },
-  );
-
-  httpServer.on("error", (err: any) => {
-    if (err.code === "EADDRINUSE") {
-      log(`Port ${port} is already in use. Trying another port...`);
-      httpServer.listen(0, "0.0.0.0");
-    } else {
-      log(`Server error: ${err.message}`);
-    }
-  });
+  if (!process.env.VERCEL) {
+    const port = parseInt(process.env.PORT || "5000", 10);
+    httpServer.listen(
+      {
+        port,
+        host: "0.0.0.0",
+      },
+      () => {
+        log(`serving on port ${port}`);
+      },
+    );
+  }
 })();

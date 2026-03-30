@@ -26,7 +26,9 @@ import {
     Users,
     Handshake,
     ArrowUpRight,
-    BellRing
+    BellRing,
+    Building2,
+    Scale
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +53,10 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 
+import { useAuth } from "@/context/auth-context";
+
 export default function TechnicalCase() {
+    const { user } = useAuth();
     const [, setLocation] = useLocation();
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadStep, setDownloadStep] = useState(0);
@@ -118,7 +123,7 @@ export default function TechnicalCase() {
                 } else {
                     // Actual file download logic
                     const content = `
-H3M4 SECURITY VAULT - TECHNICAL CASE STUDY
+${user?.role === 'police' ? 'OFFICIAL POLICE FORENSIC REPORT' : 'H3M4 SECURITY VAULT - TECHNICAL CASE STUDY'}
 ------------------------------------------
 CASE ID: ${caseData.id}
 TITLE: ${caseData.title}
@@ -151,7 +156,7 @@ HASH: SHA256:7b2a758913...
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = url;
-                    link.download = `H3M4-Intelligence-${caseData.id}.txt`;
+                    link.download = `${user?.role === 'police' ? 'FIR_EVIDENCE_' : 'H3M4-Intelligence-'}${caseData.id}.txt`;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
@@ -159,14 +164,14 @@ HASH: SHA256:7b2a758913...
 
                     setIsDownloading(false);
                     setDownloadStep(0);
-                    toast.success("Cryptographically Signed Case Downloaded", {
+                    toast.success(user?.role === 'police' ? "Court-Ready Forensic Evidence Exported" : "Cryptographically Signed Case Downloaded", {
                         description: `Report ${caseData.id} has been securely archived to your local storage.`,
                     });
                 }
             }, 1500);
             return () => clearTimeout(timer);
         }
-    }, [isDownloading, downloadStep]);
+    }, [isDownloading, downloadStep, user]);
 
     const handleShare = (method: string) => {
         toast.promise(new Promise(res => setTimeout(res, 1000)), {
@@ -186,7 +191,7 @@ HASH: SHA256:7b2a758913...
                     onClick={() => setLocation("/intel")}
                     className="gap-2 text-muted-foreground hover:text-primary transition-colors"
                 >
-                    <ChevronLeft className="h-4 w-4" /> Back to Intel Feed
+                    <ChevronLeft className="h-4 w-4" /> Back to {user?.role === 'police' ? "Intelligence" : "Intel Feed"}
                 </Button>
                 <div className="flex gap-3">
                     <Button
@@ -201,7 +206,7 @@ HASH: SHA256:7b2a758913...
                         ) : (
                             <Download className="h-4 w-4" />
                         )}
-                        {isDownloading ? "Generating..." : "Download Signed Case"}
+                        {isDownloading ? "Generating..." : (user?.role === 'police' ? "Export Court Evidence" : "Download Signed Case")}
                     </Button>
 
                     <DropdownMenu>
@@ -357,6 +362,7 @@ HASH: SHA256:7b2a758913...
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground max-w-3xl leading-tight">
+                        {user?.role === 'police' && <span className="text-primary block text-sm font-mono mb-2">CRIMINAL CASE TECHNICAL ANALYSIS //</span>}
                         {caseData.title}
                     </h1>
 
@@ -409,6 +415,51 @@ HASH: SHA256:7b2a758913...
                         </TabsList>
 
                         <TabsContent value="overview" className="space-y-8 animate-in fade-in duration-500">
+                            {/* H3M4 ECOSYSTEM CORRELATION - NEW SECTION */}
+                            <div className="p-6 rounded-2xl border border-primary/20 bg-primary/5 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                                    <Network className="h-32 w-32 text-primary" />
+                                </div>
+                                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                    <Users className="h-5 w-5 text-primary" /> H3M4 Ecosystem Intelligence Correlation
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="space-y-2">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase">Researcher Contribution</div>
+                                        <div className="p-3 rounded-lg bg-black/40 border border-white/5 space-y-2">
+                                            <div className="flex items-center gap-2 text-xs font-bold text-primary">
+                                                <Fingerprint className="h-3 w-3" /> Technical Discovery
+                                            </div>
+                                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                                Researcher <span className="text-white">@ghost_shell</span> provided full PoC and memory dump analysis for the SVG bypass.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase">Enterprise Correlation</div>
+                                        <div className="p-3 rounded-lg bg-black/40 border border-white/5 space-y-2">
+                                            <div className="flex items-center gap-2 text-xs font-bold text-orange-500">
+                                                <Building2 className="h-3 w-3" /> Victim Impact Data
+                                            </div>
+                                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                                3 FinTech partners reported hits. IP <span className="text-white">102.34.11.8</span> confirmed as primary exfiltration C2.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase">Legal Admissibility</div>
+                                        <div className="p-3 rounded-lg bg-black/40 border border-white/5 space-y-2">
+                                            <div className="flex items-center gap-2 text-xs font-bold text-emerald-500">
+                                                <Scale className="h-3 w-3" /> H3M4 Verdict
+                                            </div>
+                                            <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                                Evidence anchored on 12 nodes. Certified as "Court-Ready Forensic Evidence" by H3M4 Notary.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="space-y-4">
                                 <h3 className="text-xl font-bold flex items-center gap-3">
                                     <div className="p-1.5 rounded bg-primary/10"><Activity className="h-5 w-5 text-primary" /></div>
@@ -417,49 +468,18 @@ HASH: SHA256:7b2a758913...
                                 <p className="text-muted-foreground leading-relaxed">
                                     This critical vulnerability involves a failure in the application's XML/SVG parsing engine. Specifically, when an authenticated user uploads a profile picture in SVG format, the server-side validation correctly checks the file extension but fails to sanitize the underlying XML structure of the SVG for embedded JavaScript.
                                 </p>
-                                <p className="text-muted-foreground leading-relaxed">
-                                    This results in a **Stored Cross-Site Scripting (XSS)** vulnerability. Any user viewing the victim's profile will have the malicious payload executed in their browser context, allowing for session hijacking, CSRF token theft, and unauthorized secondary actions.
-                                </p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="p-6 rounded-xl bg-destructive/5 border border-destructive/10 space-y-3">
-                                    <h4 className="text-sm font-bold text-destructive flex items-center gap-2 uppercase tracking-wide">
-                                        <AlertTriangle className="h-4 w-4" /> Critical Impact Zone
+                            {/* AUTOMATED LEGAL BRIEFING - NEW SECTION */}
+                            <div className="p-6 rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                                        <FileText className="h-4 w-4 text-primary" /> Automated Legal Briefing (AI-Aided)
                                     </h4>
-                                    <ul className="space-y-2">
-                                        <li className="text-xs text-foreground/80 flex items-start gap-2">
-                                            <div className="h-1 w-1 rounded-full bg-destructive mt-1.5 shrink-0" />
-                                            Complete compromise of administrative session cookies.
-                                        </li>
-                                        <li className="text-xs text-foreground/80 flex items-start gap-2">
-                                            <div className="h-1 w-1 rounded-full bg-destructive mt-1.5 shrink-0" />
-                                            Data exfiltration of sensitive PII during profile rendering.
-                                        </li>
-                                        <li className="text-xs text-foreground/80 flex items-start gap-2">
-                                            <div className="h-1 w-1 rounded-full bg-destructive mt-1.5 shrink-0" />
-                                            Widespread account takeover via CSRF exploitation.
-                                        </li>
-                                    </ul>
+                                    <Badge variant="outline" className="text-[9px] border-primary/30 text-primary">TRANSLATED FOR LEGAL DEPT</Badge>
                                 </div>
-                                <div className="p-6 rounded-xl bg-primary/5 border border-primary/10 space-y-3">
-                                    <h4 className="text-sm font-bold text-primary flex items-center gap-2 uppercase tracking-wide">
-                                        <Lock className="h-4 w-4" /> Security Constraints
-                                    </h4>
-                                    <ul className="space-y-2">
-                                        <li className="text-xs text-foreground/80 flex items-start gap-2">
-                                            <div className="h-1 w-1 rounded-full bg-primary mt-1.5 shrink-0" />
-                                            WAF bypassed via Base64 encoded CDATA sections.
-                                        </li>
-                                        <li className="text-xs text-foreground/80 flex items-start gap-2">
-                                            <div className="h-1 w-1 rounded-full bg-primary mt-1.5 shrink-0" />
-                                            Content-Type sniffing bypass utilized for storage.
-                                        </li>
-                                        <li className="text-xs text-foreground/80 flex items-start gap-2">
-                                            <div className="h-1 w-1 rounded-full bg-primary mt-1.5 shrink-0" />
-                                            Bypasses standard `img-src` CSP without careful hardening.
-                                        </li>
-                                    </ul>
+                                <div className="p-4 bg-black/20 rounded-lg border border-white/5 italic text-xs leading-relaxed text-muted-foreground">
+                                    "This case constitutes a violation of Section 66C and 43 of the IT Act. The accused utilized specialized technical bypasses to inject malicious scripts into the host's infrastructure, facilitating unauthorized data access. The evidence chain provided by H3M4 confirms the provenance of these logs with 99.8% confidence, making it suitable for immediate inclusion in a judicial FIR."
                                 </div>
                             </div>
                         </TabsContent>
@@ -703,13 +723,13 @@ async function sanitizeSVG(rawBody) {
                                 {[
                                     { label: "Submission", date: "Jan 12", active: true, done: true },
                                     { label: "Vulnerability Verification", date: "Jan 14", active: true, done: true },
-                                    { label: "B2R Handshake", date: collaborationStatus === "idle" ? "Pending" : "Jan 30", active: collaborationStatus !== "idle", done: collaborationStatus !== "idle" && collaborationStatus !== "negotiating" },
+                                    { label: "B2R Handshake", date: collaborationStatus === "idle" ? "Pending" : "Jan 30", active: collaborationStatus !== "idle", done: collaborationStatus !== "idle" && collaborationStatus !== "awaiting" },
                                     { label: "Researcher Review", date: collaborationStatus === "reviewing" || collaborationStatus === "established" ? "Active" : "Locked", active: collaborationStatus === "reviewing" || collaborationStatus === "established", done: collaborationStatus === "established" }
                                 ].map((step, idx) => (
                                     <div key={idx} className="flex gap-4 items-start relative">
                                         <div className={`h-8 w-8 rounded-full border flex items-center justify-center shrink-0 z-10 transition-colors duration-500 ${step.done ? "bg-emerald-500 border-emerald-500 text-black" :
-                                                step.active ? "bg-primary/20 border-primary text-primary animate-pulse" :
-                                                    "bg-background border-white/10 text-muted-foreground"
+                                            step.active ? "bg-primary/20 border-primary text-primary animate-pulse" :
+                                                "bg-background border-white/10 text-muted-foreground"
                                             }`}>
                                             {step.done ? <CheckCircle2 className="h-4 w-4" /> : <div className="text-[10px] font-bold">{idx + 1}</div>}
                                         </div>

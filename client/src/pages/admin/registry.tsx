@@ -37,6 +37,7 @@ import {
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { Submission } from "@shared/schema";
+import { useAuth } from "@/context/auth-context";
 
 const mockRegistry = [
     { id: "REG-902", title: "AWS IAM Privilege Escalation", category: "Cloud Security", severity: "critical", confidence: "98%", impact: "PCI-DSS", visibility: "enterprise", status: "Active" },
@@ -48,18 +49,23 @@ const mockRegistry = [
 ];
 
 export default function IntelligenceRegistry() {
+    const { user } = useAuth();
     const { data: submissions = [] } = useQuery<Submission[]>({
         queryKey: ["/api/submissions"],
     });
 
     const verifiedSubmissions = submissions.filter(s => s.status === "verified").map(s => ({
-        id: `REG-${s.id?.toString().substring(0, 3) || 'XXX'}`,
+        id: s.cveId || `H3M4-${s.id?.toString().substring(0, 4)}`,
         title: s.title,
         category: s.category,
         severity: s.severity,
-        confidence: "90%",
+        cvss: s.cvssScore || "5.0",
+        epss: s.epssScore || "0.01",
+        exploitability: s.exploitability || "medium",
+        complexity: s.complexity || "medium",
         impact: s.impactAnalysis?.substring(0, 10) || "Standard",
         visibility: "enterprise",
+        description: s.description,
         status: "Active"
     }));
 
@@ -75,7 +81,7 @@ export default function IntelligenceRegistry() {
     const [reportFormat, setReportFormat] = useState("JSON + PDF Format");
     const [isCompiling, setIsCompiling] = useState(false);
 
-    const fullRegistry = [...verifiedSubmissions, ...mockRegistry];
+    const fullRegistry = [...verifiedSubmissions, ...mockRegistry.map(m => ({ ...m, cvss: "7.5", epss: "0.45", exploitability: "medium", complexity: "low", description: "Mocked registry entry for visualization." }))];
 
     const filteredRegistry = fullRegistry.filter(item =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -106,10 +112,16 @@ export default function IntelligenceRegistry() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-heading font-bold mb-1 flex items-center gap-3">
-                        Intelligence Master Registry
-                        <Badge variant="outline" className="text-[10px] border-primary/30 text-primary bg-primary/5 animate-pulse">LIVE_SYNCING</Badge>
+                        {user?.role === 'police' ? "Digital Forensic Registry" : "Intelligence Master Registry"}
+                        <Badge variant="outline" className="text-[10px] border-primary/30 text-primary bg-primary/5 animate-pulse">
+                            {user?.role === 'police' ? "COURT_CERTIFIED_SESSIONS" : "LIVE_SYNCING"}
+                        </Badge>
                     </h1>
-                    <p className="text-muted-foreground">The authoritative registry for verified threat intelligence and compliance mapping.</p>
+                    <p className="text-muted-foreground">
+                        {user?.role === 'police'
+                            ? "The authoritative registry for criminal forensic artifacts, technical proofs, and chain-of-custody reporting."
+                            : "The authoritative registry for verified threat intelligence and compliance mapping."}
+                    </p>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" className="gap-2" onClick={handleExport}>
@@ -118,6 +130,26 @@ export default function IntelligenceRegistry() {
                     <Button className="gap-2" onClick={() => setIsManualEntryOpen(true)}>
                         <Plus className="h-4 w-4" /> Manual Entry
                     </Button>
+                </div>
+            </div>
+
+            {/* CVD-Style Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="glass-panel p-4 rounded-xl border-primary/10">
+                    <div className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Total Vulnerabilities</div>
+                    <div className="text-2xl font-bold font-heading">{fullRegistry.length}</div>
+                </div>
+                <div className="glass-panel p-4 rounded-xl border-destructive/20">
+                    <div className="text-[10px] font-bold text-destructive uppercase mb-1">Critical (CVSS 9.0+)</div>
+                    <div className="text-2xl font-bold font-heading text-destructive">{fullRegistry.filter(i => parseFloat(i.cvss || "0") >= 9).length}</div>
+                </div>
+                <div className="glass-panel p-4 rounded-xl border-emerald-500/20">
+                    <div className="text-[10px] font-bold text-emerald-500 uppercase mb-1">Exploitation Probability</div>
+                    <div className="text-2xl font-bold font-heading text-emerald-500">{(fullRegistry.reduce((acc, i) => acc + parseFloat(i.epss || "0"), 0) / fullRegistry.length * 100).toFixed(1)}%</div>
+                </div>
+                <div className="glass-panel p-4 rounded-xl border-blue-500/20">
+                    <div className="text-[10px] font-bold text-blue-500 uppercase mb-1">Active Mitigations</div>
+                    <div className="text-2xl font-bold font-heading text-blue-500">88%</div>
                 </div>
             </div>
 
@@ -142,10 +174,6 @@ export default function IntelligenceRegistry() {
                         <AlertCircle className="h-3 w-3" /> Severity
                         <ChevronDown className="h-3 w-3 opacity-50" />
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2 text-xs">
-                        <ShieldCheck className="h-3 w-3" /> Visibility
-                        <ChevronDown className="h-3 w-3 opacity-50" />
-                    </Button>
                 </div>
             </div>
 
@@ -154,13 +182,11 @@ export default function IntelligenceRegistry() {
                 <Table>
                     <TableHeader className="bg-white/5">
                         <TableRow className="hover:bg-transparent border-white/10">
-                            <TableHead className="w-[100px] font-mono text-[10px] uppercase">ID</TableHead>
-                            <TableHead className="font-semibold">Intelligence Title</TableHead>
-                            <TableHead className="hidden md:table-cell">Category</TableHead>
-                            <TableHead>Severity</TableHead>
-                            <TableHead className="hidden lg:table-cell">Confidence</TableHead>
-                            <TableHead>Compliance</TableHead>
-                            <TableHead className="hidden md:table-cell">Visibility</TableHead>
+                            <TableHead className="w-[120px] font-mono text-[10px] uppercase">H3M4-ID</TableHead>
+                            <TableHead className="font-semibold">Vulnerability Title</TableHead>
+                            <TableHead>Category</TableHead>
+                            <TableHead>CVSS</TableHead>
+                            <TableHead>EPSS</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
@@ -168,41 +194,23 @@ export default function IntelligenceRegistry() {
                     <TableBody>
                         {filteredRegistry.map((item) => (
                             <TableRow key={item.id} className="border-white/5 hover:bg-white/5 transition-colors group">
-                                <TableCell className="font-mono text-xs text-muted-foreground">{item.id}</TableCell>
+                                <TableCell className="font-mono text-xs text-primary font-bold">{item.id}</TableCell>
                                 <TableCell>
                                     <div className="font-medium">{item.title}</div>
                                 </TableCell>
-                                <TableCell className="hidden md:table-cell text-xs text-muted-foreground">{item.category}</TableCell>
+                                <TableCell className="text-xs text-muted-foreground">{item.category}</TableCell>
                                 <TableCell>
-                                    <Badge variant="outline" className={`text-[10px] uppercase ${item.severity === 'critical' ? 'text-destructive border-destructive/30 bg-destructive/10' :
-                                        item.severity === 'high' ? 'text-orange-500 border-orange-500/30 bg-orange-500/10' :
-                                            'text-yellow-500 border-yellow-500/30 bg-yellow-500/10'
-                                        }`}>
-                                        {item.severity}
+                                    <Badge variant="outline" className={`font-mono ${parseFloat(item.cvss) > 8 ? 'text-destructive border-destructive' : 'text-orange-500 border-orange-500'}`}>
+                                        {item.cvss}
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="hidden lg:table-cell">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden">
-                                            <div className="h-full bg-primary" style={{ width: item.confidence }} />
-                                        </div>
-                                        <span className="text-[10px] font-mono">{item.confidence}</span>
-                                    </div>
-                                </TableCell>
                                 <TableCell>
-                                    <Badge variant="outline" className="text-[10px] border-primary/20 text-primary/80">{item.impact}</Badge>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                    <span className={`text-[10px] uppercase font-bold flex items-center gap-1.5 ${item.visibility === 'police-only' ? 'text-red-400' :
-                                        item.visibility === 'enterprise' ? 'text-blue-400' :
-                                            'text-green-400'
-                                        }`}>
-                                        <div className={`h-1 w-1 rounded-full ${item.visibility === 'police-only' ? 'bg-red-400' :
-                                            item.visibility === 'enterprise' ? 'bg-blue-400' :
-                                                'bg-green-400'
-                                            }`} />
-                                        {item.visibility}
-                                    </span>
+                                    <div className="flex flex-col gap-1">
+                                        <div className="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-full bg-emerald-500" style={{ width: `${parseFloat(item.epss) * 100}%` }} />
+                                        </div>
+                                        <span className="text-[10px] font-mono opacity-50">{item.epss}</span>
+                                    </div>
                                 </TableCell>
                                 <TableCell>
                                     <span className={`text-[10px] px-1.5 py-0.5 rounded ${item.status === 'Active' ? 'bg-destructive/10 text-destructive' : 'bg-muted text-muted-foreground'
@@ -220,9 +228,6 @@ export default function IntelligenceRegistry() {
                                         >
                                             <Eye className="h-4 w-4 text-muted-foreground" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-white/10">
-                                            <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                                        </Button>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -231,42 +236,85 @@ export default function IntelligenceRegistry() {
                 </Table>
             </div>
 
-            {/* Detail View Dialog */}
+            {/* Detail View Dialog - CVEDetails Style */}
             <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
-                <DialogContent className="max-w-2xl bg-sidebar/95 backdrop-blur-xl border-white/10 p-0 overflow-hidden">
-                    <div className="p-8 bg-primary/5 border-b border-white/5 space-y-4">
+                <DialogContent className="max-w-3xl bg-[#0a0f14] border-white/10 p-0 overflow-hidden shadow-2xl">
+                    <div className="p-8 bg-gradient-to-br from-primary/10 to-transparent border-b border-white/5 space-y-4">
                         <div className="flex items-center justify-between">
-                            <Badge variant="outline" className="text-[10px] font-mono border-primary/30 text-primary uppercase">{selectedItem?.id}</Badge>
-                            <Badge className={selectedItem?.severity === 'critical' ? 'bg-destructive' : 'bg-primary'}>{selectedItem?.severity.toUpperCase()}</Badge>
+                            <div className="flex items-center gap-4">
+                                <Badge className="bg-primary/20 text-primary border-primary/30 font-mono text-lg px-3 py-1">{selectedItem?.id}</Badge>
+                                <div className="h-8 w-[1px] bg-white/10" />
+                                <Badge variant="outline" className="border-emerald-500/30 text-emerald-500 font-mono">MITRE_MAPPED</Badge>
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <div className="text-[10px] text-muted-foreground uppercase font-bold">Base CVSS Score</div>
+                                <div className={`text-4xl font-heading font-black ${parseFloat(selectedItem?.cvss || "0") > 9 ? 'text-destructive' : 'text-orange-500'}`}>
+                                    {selectedItem?.cvss}
+                                </div>
+                            </div>
                         </div>
-                        <DialogTitle className="text-2xl font-heading font-bold">{selectedItem?.title}</DialogTitle>
-                        <DialogDescription className="text-muted-foreground">Verification anchored on the H3M4 Global Ledger.</DialogDescription>
+                        <DialogTitle className="text-3xl font-heading font-bold tracking-tight">{selectedItem?.title}</DialogTitle>
                     </div>
-                    <div className="p-8 grid grid-cols-2 gap-8">
-                        <div className="space-y-4">
-                            <div>
-                                <h4 className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Category</h4>
-                                <p className="text-sm font-medium">{selectedItem?.category}</p>
+
+                    <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                        {/* Technical Breakdown Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="bg-black/40 border border-white/5 p-4 rounded-xl">
+                                <h4 className="text-[10px] font-bold text-muted-foreground uppercase mb-2">Exploitability</h4>
+                                <div className="text-lg font-bold uppercase text-primary">{selectedItem?.exploitability}</div>
+                                <p className="text-[10px] text-muted-foreground mt-1">Ease of crafting proof-of-concept</p>
                             </div>
-                            <div>
-                                <h4 className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Compliance Mapping</h4>
-                                <Badge variant="outline" className="border-primary/20 text-primary">{selectedItem?.impact}</Badge>
+                            <div className="bg-black/40 border border-white/5 p-4 rounded-xl">
+                                <h4 className="text-[10px] font-bold text-muted-foreground uppercase mb-2">Attack Complexity</h4>
+                                <div className="text-lg font-bold uppercase text-orange-500">{selectedItem?.complexity}</div>
+                                <p className="text-[10px] text-muted-foreground mt-1">Technical prerequisites for access</p>
+                            </div>
+                            <div className="bg-black/40 border border-white/5 p-4 rounded-xl">
+                                <h4 className="text-[10px] font-bold text-muted-foreground uppercase mb-2">EPSS Probability</h4>
+                                <div className="text-lg font-bold uppercase text-emerald-500">{(parseFloat(selectedItem?.epss || "0") * 100).toFixed(2)}%</div>
+                                <p className="text-[10px] text-muted-foreground mt-1">Likelihood of active exploitation</p>
                             </div>
                         </div>
-                        <div className="space-y-4">
-                            <div>
-                                <h4 className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Visibility Layer</h4>
-                                <p className="text-sm font-medium capitalize">{selectedItem?.visibility}</p>
+
+                        {/* Description Section */}
+                        <div className="space-y-3">
+                            <h3 className="text-sm font-bold border-l-2 border-primary pl-3 uppercase tracking-widest">Description & Intelligence</h3>
+                            <div className="bg-card/40 p-5 rounded-xl border border-white/5 leading-relaxed text-sm text-muted-foreground">
+                                {selectedItem?.description || "No detailed intelligence provided for this record."}
                             </div>
-                            <div>
-                                <h4 className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Network Status</h4>
-                                <span className="text-sm text-emerald-500 font-bold">VERIFIED_IMMUTABLE</span>
+                        </div>
+
+                        {/* Compliance & Impact */}
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-bold border-l-2 border-blue-500 pl-3 uppercase tracking-widest">Compliance Impact</h3>
+                                <div className="flex flex-wrap gap-2 text-xs">
+                                    <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20">PCI-DSS 4.1</Badge>
+                                    <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20">GDPR_ARTICLE_32</Badge>
+                                    <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20">SOC2_CC7.1</Badge>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-bold border-l-2 border-emerald-500 pl-3 uppercase tracking-widest">H3M4 Validator Log</h3>
+                                <div className="font-mono text-[10px] text-emerald-500/70 p-4 bg-emerald-500/5 rounded-lg">
+                                    [SYNC] ROOT_ANCHOR_VERIFIED<br />
+                                    [SIGN] NODE_CONSENSUS: 12/12<br />
+                                    [HASH] SHA256: 0x982e...e12a
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="p-4 bg-black/40 border-t border-white/5 flex justify-end gap-3">
-                        <Button variant="outline" size="sm" onClick={() => setSelectedItem(null)}>Close Registry</Button>
-                        <Button size="sm" onClick={() => toast.success("Intelligence anchored to your session keys.")}>Clone to Workspace</Button>
+
+                    <div className="p-4 bg-black/60 border-t border-white/5 flex justify-between items-center px-8">
+                        <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
+                            <Clock className="h-3 w-3" /> LAST UPDATED: {new Date().toLocaleDateString()}
+                        </div>
+                        <div className="flex gap-3">
+                            <Button variant="outline" size="sm" onClick={() => setSelectedItem(null)}>Exit View</Button>
+                            <Button size="sm" className="bg-primary text-black font-bold">
+                                <Download className="h-3 w-3 mr-2" /> Download Forensic Report
+                            </Button>
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>

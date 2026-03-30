@@ -20,10 +20,15 @@ import EnterpriseManagement from "@/pages/admin/enterprises";
 import ComplianceMonitor from "@/pages/admin/compliance";
 import EvidenceStore from "@/pages/admin/logs";
 import ThreatSignalGraph from "@/pages/admin/graph";
+import PoliceDashboard from "@/pages/police/dashboard";
+import PoliceCaseAnalysis from "@/pages/police/case-analysis";
+import EvidenceVault from "@/pages/police/evidence-store";
 import LandingPage from "@/pages/landing";
+import PitchPage from "@/pages/pitch";
 import SharedHome from "@/pages/home";
 import ResearchActivity from "@/pages/researcher/activity";
 import TechnicalCase from "@/pages/technical-case";
+import WazuhDashboard from "@/pages/wazuh";
 import GlobalLedger from "@/pages/ledger";
 import CDOC from "@/pages/cdoc";
 import NotificationsPage from "@/pages/notifications";
@@ -35,7 +40,7 @@ function ProtectedRoute({ component: Component, allowedRoles }: { component: Rea
   const { user } = useAuth();
 
   if (!user) return <Redirect to="/auth" />;
-  if (allowedRoles && !allowedRoles.includes(user.role!)) return <Redirect to="/" />;
+  if (allowedRoles && !allowedRoles.includes(user.role!)) return <Redirect to="/home" />;
 
   return <Component />;
 }
@@ -43,32 +48,22 @@ function ProtectedRoute({ component: Component, allowedRoles }: { component: Rea
 function Router() {
   const { user } = useAuth();
 
-  // If not logged in, show Landing Page at root
-  if (!user) {
-    return (
-      <Switch>
-        <Route path="/auth" component={AuthPage} />
-        <Route path="/" component={LandingPage} />
-        <Route>
-          <Redirect to="/auth" />
-        </Route>
-      </Switch>
-    );
-  }
-
-  // If logged in, show Auth platform
   return (
     <Switch>
-      {/* Auth page should be standalone without Layout */}
+      {/* Public Routes (Standalone) */}
+      <Route path="/" component={LandingPage} />
+      <Route path="/pitch" component={PitchPage} />
       <Route path="/auth" component={AuthPage} />
 
-      {/* All other routes wrapped in Layout */}
+      {/* All other platform routes wrapped in Layout */}
       <Route>
         <Layout>
           <Switch>
-            <Route path="/" component={SharedHome} />
+            <Route path="/home">
+              {!user ? <Redirect to="/auth" /> : <SharedHome />}
+            </Route>
             <Route path="/dashboard">
-              {user.role === 'admin' ? <AdminDashboard /> : <Dashboard />}
+              {!user ? <Redirect to="/auth" /> : (user.role === 'admin' ? <AdminDashboard /> : <Dashboard />)}
             </Route>
             <Route path="/admin" component={AdminDashboard} />
             <Route path="/mission" component={Mission} />
@@ -89,8 +84,11 @@ function Router() {
             <Route path="/admin/enterprises">
               <ProtectedRoute component={EnterpriseManagement} allowedRoles={['admin']} />
             </Route>
+            <Route path="/enterprise/infrastructure">
+              <ProtectedRoute component={WazuhDashboard} allowedRoles={['enterprise', 'admin']} />
+            </Route>
             <Route path="/admin/compliance">
-              <ProtectedRoute component={ComplianceMonitor} allowedRoles={['admin']} />
+              <ProtectedRoute component={ComplianceMonitor} allowedRoles={['admin', 'enterprise']} />
             </Route>
             <Route path="/admin/logs">
               <ProtectedRoute component={EvidenceStore} allowedRoles={['admin']} />
@@ -98,7 +96,15 @@ function Router() {
             <Route path="/admin/graph">
               <ProtectedRoute component={ThreatSignalGraph} allowedRoles={['admin']} />
             </Route>
-            <Route path="/about" component={LandingPage} />
+            <Route path="/police">
+              <ProtectedRoute component={PoliceDashboard} allowedRoles={['police', 'admin']} />
+            </Route>
+            <Route path="/police/analysis/:id?">
+              <ProtectedRoute component={PoliceCaseAnalysis} allowedRoles={['police', 'admin']} />
+            </Route>
+            <Route path="/police/evidence/:id?">
+              <ProtectedRoute component={EvidenceVault} allowedRoles={['police', 'admin']} />
+            </Route>
             <Route path="/technical-case" component={TechnicalCase} />
             <Route path="/ledger" component={GlobalLedger} />
             <Route path="/cdoc" component={CDOC} />

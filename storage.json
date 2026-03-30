@@ -77,6 +77,22 @@
       "submittedAt": "2026-01-30T18:59:55.142Z",
       "userId": "r1",
       "author": "Cipher_01"
+    },
+    {
+      "id": "a7819667-2fc8-478b-bb64-bb6b7d285ad5",
+      "title": "AUTHO MDNFJEFAE FAENIE  F",
+      "category": "mobile",
+      "researchType": "mitigation_validation",
+      "severity": "medium",
+      "description": " JEAF JAF FBFF EJFBJEF EJFBEJF EBIEF F GJBGJGJRSG GNGISRN",
+      "impactAnalysis": "FJEFBNJEG",
+      "affectedSystems": "NJEFNJEWF ",
+      "poc": "",
+      "status": "verified",
+      "adminFeedback": "",
+      "submittedAt": "2026-01-30T20:48:43.215Z",
+      "userId": "r1",
+      "author": "Cipher_01"
     }
   ],
   "securityEvents": [
@@ -114,158 +130,270 @@
       "severity": "MEDIUM",
       "id": "3d9bcfdc-ad70-44ee-8a03-27cf51c4e421",
       "timestamp": "2026-01-30T18:59:55.153Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "SCANNING_NODES_FOR_MALICIOUS_VECTORS...",
+      "severity": "INFO",
+      "id": "3b3fce4a-2168-4ddd-b722-07ae00841d70",
+      "timestamp": "2026-01-30T19:59:37.117Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "ISOLATING_TARGET_SHARD_882...",
+      "severity": "INFO",
+      "id": "52f2b43e-73fe-4442-9b9a-a142a05f88ed",
+      "timestamp": "2026-01-30T19:59:37.621Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "REMOVING_VECTORS_AT_EDGE...",
+      "severity": "INFO",
+      "id": "ec766f79-5ffc-4eff-b2ab-3de2eec245ba",
+      "timestamp": "2026-01-30T19:59:38.325Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "FLUSHING_CDN_CACHE_FOR_PURGE...",
+      "severity": "INFO",
+      "id": "cee76e04-a424-4126-8765-3243ea7e0c16",
+      "timestamp": "2026-01-30T19:59:39.025Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "SHARD_882_INTEGRITY_RESTORED",
+      "severity": "INFO",
+      "id": "b21e203a-9988-4ed8-9b22-62dc878eef2a",
+      "timestamp": "2026-01-30T19:59:39.760Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "SCANNING_NODES_FOR_MALICIOUS_VECTORS...",
+      "severity": "INFO",
+      "id": "e52ff190-8a34-4b7e-a2c1-8c065b14b805",
+      "timestamp": "2026-01-30T20:07:18.419Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "ISOLATING_TARGET_SHARD_882...",
+      "severity": "INFO",
+      "id": "47c76464-2aa1-4030-bc83-99e5cc0af7e5",
+      "timestamp": "2026-01-30T20:07:19.085Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "REMOVING_VECTORS_AT_EDGE...",
+      "severity": "INFO",
+      "id": "211c85de-9e6a-4df8-b113-504749ee246f",
+      "timestamp": "2026-01-30T20:07:19.774Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "FLUSHING_CDN_CACHE_FOR_PURGE...",
+      "severity": "INFO",
+      "id": "041b5d53-490c-4479-b4f7-1bf0d4e84d14",
+      "timestamp": "2026-01-30T20:07:20.795Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "SHARD_882_INTEGRITY_RESTORED",
+      "severity": "INFO",
+      "id": "73ee47a7-05b1-4286-869f-d5f9fcff8e22",
+      "timestamp": "2026-01-30T20:07:21.209Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "SCANNING_NODES_FOR_MALICIOUS_VECTORS...",
+      "severity": "INFO",
+      "id": "d65d3553-3fa5-4eee-ac7c-36539725ff55",
+      "timestamp": "2026-01-30T20:30:28.612Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "ISOLATING_TARGET_SHARD_882...",
+      "severity": "INFO",
+      "id": "ea166b7d-7e67-45dd-aa45-2f56c2a2bb54",
+      "timestamp": "2026-01-30T20:30:29.203Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "REMOVING_VECTORS_AT_EDGE...",
+      "severity": "INFO",
+      "id": "be3c1f89-abb6-4aff-9387-dd259ec9fef0",
+      "timestamp": "2026-01-30T20:30:29.910Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "FLUSHING_CDN_CACHE_FOR_PURGE...",
+      "severity": "INFO",
+      "id": "427c57d3-b137-4a4d-9686-85837a32e651",
+      "timestamp": "2026-01-30T20:30:30.600Z"
+    },
+    {
+      "type": "PURGE",
+      "description": "SHARD_882_INTEGRITY_RESTORED",
+      "severity": "INFO",
+      "id": "13e3a718-3e34-4593-a74f-8c0a7c63e51e",
+      "timestamp": "2026-01-30T20:30:31.307Z"
+    },
+    {
+      "type": "INTEL_SUBMISSION",
+      "description": "New research protocol uploaded: AUTHO MDNFJEFAE FAENIE  F",
+      "severity": "MEDIUM",
+      "id": "c9c0adf9-e948-4c2f-ba75-ae47c2b7cf98",
+      "timestamp": "2026-01-30T20:48:43.240Z"
     }
   ],
   "p2pPeers": [
     {
-      "id": "4bd8b74d-da30-49b7-b508-984f73720093",
-      "peerId": "5E1209",
-      "hash": "0x913cac74",
-      "isp": "Cloudflare",
-      "type": "VALIDATOR",
-      "status": "VALID",
-      "reputation": "28",
-      "timestamp": "2026-01-30T13:10:46.495Z"
-    },
-    {
-      "id": "61aa7df6-5ff4-497a-a0ee-c0ea71e428d6",
-      "peerId": "B697AC",
-      "hash": "0xcecc3154",
+      "id": "ae5f7612-665c-4f7a-b4eb-4050763ff4e4",
+      "peerId": "0EDC52",
+      "hash": "0x22ed75c8",
       "isp": "Cloudflare",
       "type": "INBOUND_RPC",
       "status": "VALID",
-      "reputation": "98",
-      "timestamp": "2026-01-30T13:10:43.463Z"
+      "reputation": "90",
+      "timestamp": "2026-01-30T20:47:40.107Z"
     },
     {
-      "id": "337323d0-455e-471f-b846-b21a7e2fb40e",
-      "peerId": "F8C75F",
-      "hash": "0x4c90aaa6",
-      "isp": "AWS",
-      "type": "RELAY",
-      "status": "SUSPICIOUS",
-      "reputation": "49",
-      "timestamp": "2026-01-30T13:10:31.021Z"
+      "id": "e165a8e2-63e5-4a7a-9ed0-174b5ebe0d46",
+      "peerId": "CD47C9",
+      "hash": "0x6a47c6f2",
+      "isp": "Akamai",
+      "type": "VALIDATOR",
+      "status": "VALID",
+      "reputation": "14",
+      "timestamp": "2026-01-30T20:30:24.125Z"
     },
     {
-      "id": "7e225938-cff4-4385-bf61-6ba27c132f8d",
-      "peerId": "9E3CC7",
-      "hash": "0xcf6b55dc",
-      "isp": "Cloudflare",
+      "id": "9af8e8c5-16e9-42b3-a16e-250011915d5e",
+      "peerId": "D7E770",
+      "hash": "0xd9f20bd6",
+      "isp": "DigitalOcean",
       "type": "RELAY",
       "status": "VALID",
-      "reputation": "48",
-      "timestamp": "2026-01-30T13:10:24.945Z"
+      "reputation": "78",
+      "timestamp": "2026-01-30T20:29:44.530Z"
     },
     {
-      "id": "5b9c04b0-8551-40f8-a322-046f43a9dbc3",
-      "peerId": "B11809",
-      "hash": "0xf4019108",
+      "id": "edc0b57d-e263-405f-80e5-7b383031ffe2",
+      "peerId": "C2025F",
+      "hash": "0xc8a9fdcf",
+      "isp": "DigitalOcean",
+      "type": "RELAY",
+      "status": "VALID",
+      "reputation": "30",
+      "timestamp": "2026-01-30T20:07:39.324Z"
+    },
+    {
+      "id": "1d7eaf4b-9b9d-41cf-b5a4-cb818e9e0199",
+      "peerId": "3E2861",
+      "hash": "0xb61998ca",
+      "isp": "DigitalOcean",
+      "type": "RELAY",
+      "status": "VALID",
+      "reputation": "26",
+      "timestamp": "2026-01-30T20:07:24.257Z"
+    },
+    {
+      "id": "6abc6c59-e79d-422c-b9f4-784ba749e9ab",
+      "peerId": "786B6C",
+      "hash": "0x46998f81",
+      "isp": "Cloudflare",
+      "type": "INBOUND_RPC",
+      "status": "VALID",
+      "reputation": "85",
+      "timestamp": "2026-01-30T20:06:49.660Z"
+    },
+    {
+      "id": "31642ff1-c702-41ae-95d1-7504f1c36c23",
+      "peerId": "2982DC",
+      "hash": "0x178f51f3",
+      "isp": "Cloudflare",
+      "type": "INBOUND_RPC",
+      "status": "VALID",
+      "reputation": "6",
+      "timestamp": "2026-01-30T20:06:40.591Z"
+    },
+    {
+      "id": "cec77377-bd6a-4f18-b6fb-a29d1ccd0b92",
+      "peerId": "4D03B9",
+      "hash": "0xae9406bb",
+      "isp": "Akamai",
+      "type": "INBOUND_RPC",
+      "status": "VALID",
+      "reputation": "51",
+      "timestamp": "2026-01-30T20:06:37.260Z"
+    },
+    {
+      "id": "66752893-e7c7-4b0c-b5f7-dae4f6517f57",
+      "peerId": "D87ABD",
+      "hash": "0xa617398f",
+      "isp": "Cloudflare",
+      "type": "INBOUND_RPC",
+      "status": "VALID",
+      "reputation": "16",
+      "timestamp": "2026-01-30T20:06:34.191Z"
+    },
+    {
+      "id": "3e5a2284-e91e-4a37-98df-9ed1fe3ae787",
+      "peerId": "280BE5",
+      "hash": "0x9fe57e04",
       "isp": "AWS",
-      "type": "VALIDATOR",
-      "status": "SUSPICIOUS",
-      "reputation": "22",
-      "timestamp": "2026-01-30T13:10:09.828Z"
+      "type": "P2P_NODE",
+      "status": "VALID",
+      "reputation": "35",
+      "timestamp": "2026-01-30T20:05:44.908Z"
     },
     {
-      "id": "24c1deb1-aae5-4503-8f24-26ac3769ea72",
-      "peerId": "FF6B32",
-      "hash": "0xc185098e",
+      "id": "d6cc8e7f-2dff-48de-8459-e67cfa590f74",
+      "peerId": "371A47",
+      "hash": "0x558c9169",
+      "isp": "Google Cloud",
+      "type": "P2P_NODE",
+      "status": "VALID",
+      "reputation": "36",
+      "timestamp": "2026-01-30T20:03:45.300Z"
+    },
+    {
+      "id": "a015dc0a-cb0a-463b-92d8-20f390ebe163",
+      "peerId": "3A5EEE",
+      "hash": "0x4035a375",
       "isp": "Google Cloud",
       "type": "VALIDATOR",
       "status": "VALID",
-      "reputation": "51",
-      "timestamp": "2026-01-30T13:10:03.745Z"
+      "reputation": "72",
+      "timestamp": "2026-01-30T20:03:42.263Z"
     },
     {
-      "id": "f8413848-ef52-4a97-9469-b12a4d289942",
-      "peerId": "EEFE26",
-      "hash": "0x6b980cd7",
+      "id": "d9d5dae2-950c-4ac5-9ba6-3e36b738eb8c",
+      "peerId": "37DCDB",
+      "hash": "0x87941cbf",
       "isp": "Akamai",
-      "type": "RELAY",
-      "status": "VALID",
-      "reputation": "63",
-      "timestamp": "2026-01-30T13:10:00.386Z"
-    },
-    {
-      "id": "9a8e1a0f-ff90-46ee-a144-22ea1c94bf24",
-      "peerId": "756C21",
-      "hash": "0xd5090ebe",
-      "isp": "Cloudflare",
-      "type": "INBOUND_RPC",
-      "status": "VALID",
-      "reputation": "23",
-      "timestamp": "2026-01-30T13:09:48.134Z"
-    },
-    {
-      "id": "fa7f0331-3c52-4a80-a50c-6a5c5a3174f0",
-      "peerId": "66EEDD",
-      "hash": "0x7207a5db",
-      "isp": "Cloudflare",
-      "type": "RELAY",
-      "status": "VALID",
-      "reputation": "61",
-      "timestamp": "2026-01-30T02:34:12.316Z"
-    },
-    {
-      "id": "747bd807-6ca8-4dbb-bfca-fd22c9b19048",
-      "peerId": "06E547",
-      "hash": "0x6c77b168",
-      "isp": "DigitalOcean",
-      "type": "RELAY",
-      "status": "SUSPICIOUS",
-      "reputation": "56",
-      "timestamp": "2026-01-30T02:24:45.461Z"
-    },
-    {
-      "id": "2aecf2ad-8dd3-4888-b15c-366954675bdd",
-      "peerId": "26D7AB",
-      "hash": "0x0ce2d777",
-      "isp": "AWS",
       "type": "VALIDATOR",
       "status": "VALID",
-      "reputation": "45",
-      "timestamp": "2026-01-30T02:18:57.990Z"
+      "reputation": "18",
+      "timestamp": "2026-01-30T20:02:59.294Z"
     },
     {
-      "id": "24d6103d-4ba8-4206-9a09-b04fc689aa52",
-      "peerId": "C2DB18",
-      "hash": "0x5f0015dd",
-      "isp": "Cloudflare",
-      "type": "P2P_NODE",
-      "status": "VALID",
-      "reputation": "39",
-      "timestamp": "2026-01-30T02:18:57.990Z"
-    },
-    {
-      "id": "56691f72-40e0-4bb8-a513-732c8c671242",
-      "peerId": "37E9BB",
-      "hash": "0x83ddf7a2",
-      "isp": "Akamai",
-      "type": "P2P_NODE",
-      "status": "VALID",
-      "reputation": "13",
-      "timestamp": "2026-01-30T02:18:57.990Z"
-    },
-    {
-      "id": "82179637-00dc-4676-b42e-1aab69bb66e0",
-      "peerId": "FA7C3E",
-      "hash": "0x6bdce760",
-      "isp": "AWS",
-      "type": "P2P_NODE",
-      "status": "VALID",
-      "reputation": "47",
-      "timestamp": "2026-01-30T02:18:57.990Z"
-    },
-    {
-      "id": "f5727799-571c-458e-ac1e-1cf48c6ba303",
-      "peerId": "62FBF5",
-      "hash": "0xd2a42194",
+      "id": "4ec01988-1835-4a5d-80af-a723dd927b7d",
+      "peerId": "C0D868",
+      "hash": "0xa50beb55",
       "isp": "DigitalOcean",
-      "type": "RELAY",
+      "type": "INBOUND_RPC",
       "status": "VALID",
-      "reputation": "96",
-      "timestamp": "2026-01-30T02:18:57.990Z"
+      "reputation": "74",
+      "timestamp": "2026-01-30T20:02:53.249Z"
+    },
+    {
+      "id": "da691a84-25ad-4880-b0dc-d72a9e3a2548",
+      "peerId": "B541E9",
+      "hash": "0x2e5d0e9d",
+      "isp": "DigitalOcean",
+      "type": "P2P_NODE",
+      "status": "VALID",
+      "reputation": "18",
+      "timestamp": "2026-01-30T20:02:46.894Z"
     }
   ],
   "metrics": {
@@ -277,6 +405,125 @@
     "timestamp": "2026-01-30T02:18:57.985Z"
   },
   "notifications": [
+    {
+      "message": "INTEL_SUBMISSION: New research protocol uploaded: AUTHO MDNFJEFAE FAENIE  F",
+      "type": "warning",
+      "id": "b525dad7-7bb0-493a-a334-76ce02126dda",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:48:43.240Z"
+    },
+    {
+      "message": "NEW RESEARCH: AUTHO MDNFJEFAE FAENIE  F by Cipher_01",
+      "type": "info",
+      "id": "83a94f8b-889b-40f1-9563-e93e3f979f70",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:48:43.218Z"
+    },
+    {
+      "message": "PURGE: SHARD_882_INTEGRITY_RESTORED",
+      "type": "warning",
+      "id": "2e2fb9af-8c80-4b9a-953e-d9e8bb85c033",
+      "isRead": "true",
+      "timestamp": "2026-01-30T20:30:31.403Z"
+    },
+    {
+      "message": "PURGE: FLUSHING_CDN_CACHE_FOR_PURGE...",
+      "type": "warning",
+      "id": "f38871ba-e29c-46bd-863d-659876f81e3e",
+      "isRead": "true",
+      "timestamp": "2026-01-30T20:30:30.600Z"
+    },
+    {
+      "message": "PURGE: REMOVING_VECTORS_AT_EDGE...",
+      "type": "warning",
+      "id": "dee227fd-7c2c-400d-963f-451cc09ecf11",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:30:29.911Z"
+    },
+    {
+      "message": "PURGE: ISOLATING_TARGET_SHARD_882...",
+      "type": "warning",
+      "id": "f06af9f4-597e-49bd-a7ca-90eff2ce48c9",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:30:29.203Z"
+    },
+    {
+      "message": "PURGE: SCANNING_NODES_FOR_MALICIOUS_VECTORS...",
+      "type": "warning",
+      "id": "06ca2fc7-0ede-4ebe-9f22-b34eb6206c52",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:30:28.612Z"
+    },
+    {
+      "message": "PURGE: SHARD_882_INTEGRITY_RESTORED",
+      "type": "warning",
+      "id": "b2f7c449-c6e0-4f83-ab3e-e3e58f6fd5b8",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:07:21.209Z"
+    },
+    {
+      "message": "PURGE: FLUSHING_CDN_CACHE_FOR_PURGE...",
+      "type": "warning",
+      "id": "219412b2-5244-4252-81ae-c6f34aa5c247",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:07:20.795Z"
+    },
+    {
+      "message": "PURGE: REMOVING_VECTORS_AT_EDGE...",
+      "type": "warning",
+      "id": "fcb83c09-b6ea-45d7-a8aa-239bae0831e7",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:07:19.774Z"
+    },
+    {
+      "message": "PURGE: ISOLATING_TARGET_SHARD_882...",
+      "type": "warning",
+      "id": "9ec056c4-3488-4af8-819d-464033f52b63",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:07:19.085Z"
+    },
+    {
+      "message": "PURGE: SCANNING_NODES_FOR_MALICIOUS_VECTORS...",
+      "type": "warning",
+      "id": "46f88c2e-a107-4bca-b169-9c504ed5da39",
+      "isRead": "false",
+      "timestamp": "2026-01-30T20:07:18.420Z"
+    },
+    {
+      "message": "PURGE: SHARD_882_INTEGRITY_RESTORED",
+      "type": "warning",
+      "id": "51b0fcdb-7527-4d1a-816f-5b1778feb236",
+      "isRead": "false",
+      "timestamp": "2026-01-30T19:59:39.760Z"
+    },
+    {
+      "message": "PURGE: FLUSHING_CDN_CACHE_FOR_PURGE...",
+      "type": "warning",
+      "id": "d1aedd29-f0f2-41d9-aaeb-ac3df676c3d0",
+      "isRead": "false",
+      "timestamp": "2026-01-30T19:59:39.025Z"
+    },
+    {
+      "message": "PURGE: REMOVING_VECTORS_AT_EDGE...",
+      "type": "warning",
+      "id": "57c2d0d5-f545-45a3-8ddf-86450554dc58",
+      "isRead": "false",
+      "timestamp": "2026-01-30T19:59:38.325Z"
+    },
+    {
+      "message": "PURGE: ISOLATING_TARGET_SHARD_882...",
+      "type": "warning",
+      "id": "d25a7f52-3e67-4fb3-b378-1ad70581b510",
+      "isRead": "false",
+      "timestamp": "2026-01-30T19:59:37.621Z"
+    },
+    {
+      "message": "PURGE: SCANNING_NODES_FOR_MALICIOUS_VECTORS...",
+      "type": "warning",
+      "id": "d1890be7-80e0-4753-8421-a6b2eb273a44",
+      "isRead": "false",
+      "timestamp": "2026-01-30T19:59:37.118Z"
+    },
     {
       "message": "INTEL_SUBMISSION: New research protocol uploaded: fmkgm fkm, dgorgmk",
       "type": "warning",

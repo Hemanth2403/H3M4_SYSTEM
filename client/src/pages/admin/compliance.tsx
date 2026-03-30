@@ -20,6 +20,7 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table";
+import { toast } from "sonner";
 
 const frameworkStats = [
     { name: "DPDP Act (India)", coverage: 82, risks: 12, critical: 5 },
@@ -44,7 +45,13 @@ export default function ComplianceMonitor() {
                     <h1 className="text-3xl font-heading font-bold mb-1">Compliance Intelligence</h1>
                     <p className="text-muted-foreground">Mapping verified threat intel to regulatory frameworks (DPDP, RBI, CERT-In).</p>
                 </div>
-                <Button className="gap-2 bg-primary text-primary-foreground">
+                <Button
+                    className="gap-2 bg-primary text-primary-foreground"
+                    onClick={() => {
+                        toast.loading("Generating comprehensive audit pack...");
+                        setTimeout(() => toast.success("Audit Pack generated (PDF/CSV)"), 2000);
+                    }}
+                >
                     <FileText className="h-4 w-4" /> Generate Audit Pack
                 </Button>
             </div>
@@ -89,7 +96,17 @@ export default function ComplianceMonitor() {
                         <p className="text-xs leading-relaxed text-destructive/80 mb-4">
                             5 FinTech firms are currently exposed to severe DPDP Act violations via verified "Auth Bypass" research.
                         </p>
-                        <Button size="sm" variant="outline" className="w-full border-destructive/30 text-destructive hover:bg-destructive/10 text-xs font-bold">CONTACT REGULATOR</Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full border-destructive/30 text-destructive hover:bg-destructive/10 text-xs font-bold"
+                            onClick={() => {
+                                toast.error("Initiating High-Priority Regulatory Disclosure...");
+                                setTimeout(() => toast.success("Report securely transmitted to CERT-In/RBI"), 2000);
+                            }}
+                        >
+                            CONTACT REGULATOR
+                        </Button>
                     </div>
 
                     <div className="p-4 rounded-xl border border-white/10 bg-card/40">
@@ -148,8 +165,8 @@ export default function ComplianceMonitor() {
                                 </TableCell>
                                 <TableCell>
                                     <span className={`text-[10px] px-1.5 py-0.5 rounded ${rm.status === 'Open' ? 'bg-destructive/10 text-destructive' :
-                                            rm.status === 'Remediating' ? 'bg-orange-500/10 text-orange-500' :
-                                                'bg-primary/10 text-primary'
+                                        rm.status === 'Remediating' ? 'bg-orange-500/10 text-orange-500' :
+                                            'bg-primary/10 text-primary'
                                         }`}>
                                         {rm.status.toUpperCase()}
                                     </span>

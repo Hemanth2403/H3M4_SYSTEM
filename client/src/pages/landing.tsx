@@ -19,7 +19,10 @@ import {
     Cpu,
     Globe,
     Fingerprint,
-    XCircle
+    XCircle,
+    Mail,
+    Phone,
+    MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +33,7 @@ import accessLoginImg from '@assets/product_shots/access_login.png';
 import researcherImg from '@assets/product_shots/researcher_dashboard.png';
 import enterpriseImg from '@assets/product_shots/enterprise_home.png';
 import intelFeedImg from '@assets/product_shots/intel_feed.png';
+import policeImg from '@assets/product_shots/police_governance.png';
 import { LiveSecurityConsole } from "@/components/landing/live-console";
 
 export default function LandingPage() {
@@ -38,7 +42,7 @@ export default function LandingPage() {
             {/* Navigation */}
             <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/60 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 md:h-24 flex items-center justify-between relative">
-                    <Link href="/auth" className="flex items-center gap-2 md:gap-4 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
+                    <Link href="/" className="flex items-center gap-2 md:gap-4 shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
                         <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-gradient-to-tr from-primary to-secondary p-[1px]">
                             <div className="h-full w-full rounded-xl bg-black flex items-center justify-center">
                                 <ShieldCheck className="h-5 w-5 md:h-7 md:w-7 text-primary" />
@@ -50,7 +54,7 @@ export default function LandingPage() {
                     <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-10 text-base font-medium text-muted-foreground">
                         <a href="#vision" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all">Vision</a>
                         <a href="#product" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all">Product</a>
-                        <a href="#ecosystem" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all">Ecosystem</a>
+                        <Link href="/pitch" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all cursor-pointer">Presentation</Link>
                         <a href="#governance" className="hover:text-primary hover:bg-white/5 px-5 py-2.5 rounded-full transition-all">Trust</a>
                     </div>
 
@@ -92,7 +96,7 @@ export default function LandingPage() {
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
                                 <Link href="/auth" className="w-full sm:w-auto">
                                     <Button size="lg" className="w-full sm:w-auto h-12 px-8 text-sm md:text-base font-bold bg-white text-black hover:bg-gray-200 rounded-full transition-all">
-                                        Start Mission <ArrowRight className="ml-2 h-4 w-4" />
+                                        Initialize Protocol <ArrowRight className="ml-2 h-4 w-4" />
                                     </Button>
                                 </Link>
                                 <Link href="/technical-case" className="w-full sm:w-auto">
@@ -178,6 +182,7 @@ export default function LandingPage() {
                             <p className="text-lg text-muted-foreground leading-relaxed">
                                 Enterprises get a unified view of active threat signals. Monitor 18+ active risks across your sectors,
                                 track real-time compliance status (RBI/GDPR), and see verified intelligence confidence scores at a glance.
+                                This unified portal serves Enterprises, Law Enforcement, and System Governors simultaneously.
                             </p>
                         </div>
                         <Link href="/auth" className="order-2 relative group perspective-1000 cursor-pointer">
@@ -221,6 +226,34 @@ export default function LandingPage() {
                             <img src={researcherImg} alt="Researcher Profile" className="relative rounded-2xl shadow-2xl border border-white/10 transform -rotate-y-2 transition-transform duration-500 group-hover:rotate-0" />
                         </Link>
                     </div>
+
+                    {/* Feature 5: Police Governance */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <Link href="/auth" className="order-2 lg:order-1 relative group perspective-1000 cursor-pointer">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-primary rounded-2xl blur opacity-10 group-hover:opacity-40 transition duration-1000"></div>
+                            <img src={policeImg} alt="Police Portal" className="relative rounded-2xl shadow-2xl border border-white/10 transform rotate-y-2 transition-transform duration-500 group-hover:rotate-0" />
+                        </Link>
+                        <div className="order-1 lg:order-2">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-xs font-bold text-blue-500 mb-6 uppercase tracking-widest border border-blue-500/20">
+                                <Scale className="h-3 w-3" /> Police Governance
+                            </div>
+                            <h3 className="text-3xl md:text-5xl font-heading font-bold mb-6">Tactical Investigation Portal</h3>
+                            <p className="text-lg text-muted-foreground leading-relaxed">
+                                Empowering cyber-crime units with high-fidelity intelligence. Connect digital artifacts directly to FIRs,
+                                access researcher-backed forensic analysis, and generate court-ready evidence packages on an immutable ledger.
+                            </p>
+                            <div className="mt-8 grid grid-cols-2 gap-4">
+                                <div className="flex flex-col gap-1 border-l-2 border-blue-500/30 pl-4">
+                                    <span className="text-white font-bold text-sm italic">Digital Evidence</span>
+                                    <span className="text-[10px] text-muted-foreground uppercase font-mono tracking-tighter">Chain of Custody</span>
+                                </div>
+                                <div className="flex flex-col gap-1 border-l-2 border-primary/30 pl-4">
+                                    <span className="text-white font-bold text-sm italic">Court Signed</span>
+                                    <span className="text-[10px] text-muted-foreground uppercase font-mono tracking-tighter">Judicial Review Ready</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section >
 
@@ -263,6 +296,94 @@ export default function LandingPage() {
                 </div>
             </section >
 
+            {/* Business Model Section */}
+            <section id="business-model" className="py-24 relative bg-black border-t border-white/5">
+                <div className="absolute top-0 right-0 p-20 opacity-20 pointer-events-none">
+                    <Building2 className="h-96 w-96 text-primary/10" />
+                </div>
+
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="text-center mb-20">
+                        <h2 className="text-sm font-black text-primary uppercase tracking-[0.4em] mb-4">Sovereign Economics</h2>
+                        <h3 className="text-4xl lg:text-7xl font-heading font-black tracking-tighter">The Value of <span className="text-muted-foreground">Permanence</span></h3>
+                        <p className="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto">
+                            A sustainable ecosystem where security is an asset, not an expense.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* Stream 1: Enterprise */}
+                        <div className="group relative p-8 rounded-3xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary/10" />
+                            <div className="mb-8">
+                                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                                    <Activity className="h-6 w-6" />
+                                </div>
+                                <h4 className="text-2xl font-bold font-heading mb-2">Enterprise Sovereign</h4>
+                                <p className="text-sm text-muted-foreground">For Banks & Critical Infrastructure</p>
+                            </div>
+                            <div className="space-y-4 mb-8">
+                                <div className="text-4xl font-black tracking-tight text-white">$50k<span className="text-lg text-muted-foreground font-medium">/yr</span></div>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    Full access to real-time risk signals, automated compliance mapping (RBI/GDPR), and the collective defense network.
+                                </p>
+                            </div>
+                            <ul className="space-y-3 text-sm text-gray-400">
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-primary" /> Sector Risk Alerts</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-primary" /> Automated Patching</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-primary" /> Compliance Dashboards</li>
+                            </ul>
+                        </div>
+
+                        {/* Stream 2: Government */}
+                        <div className="group relative p-8 rounded-3xl border border-blue-500/20 bg-blue-500/[0.02] hover:bg-blue-500/[0.04] transition-all duration-500 overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/50 to-blue-500/10" />
+                            <div className="mb-8">
+                                <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 transition-transform">
+                                    <Scale className="h-6 w-6" />
+                                </div>
+                                <h4 className="text-2xl font-bold font-heading mb-2">Institutional Grid</h4>
+                                <p className="text-sm text-muted-foreground">For Law Enforcement & Regulators</p>
+                            </div>
+                            <div className="space-y-4 mb-8">
+                                <div className="text-4xl font-black tracking-tight text-white">Custom<span className="text-lg text-muted-foreground font-medium"> Licensing</span></div>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    Deploying the "Tactical Investigation Suite" for cyber-crime units to receive court-ready evidence packages.
+                                </p>
+                            </div>
+                            <ul className="space-y-3 text-sm text-gray-400">
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-blue-500" /> Evidence Packaging</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-blue-500" /> Forensic Chain of Custody</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-blue-500" /> Judicial Reporting</li>
+                            </ul>
+                        </div>
+
+                        {/* Stream 3: Researcher */}
+                        <div className="group relative p-8 rounded-3xl border border-emerald-500/20 bg-emerald-500/[0.02] hover:bg-emerald-500/[0.04] transition-all duration-500 overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/50 to-emerald-500/10" />
+                            <div className="mb-8">
+                                <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-6 group-hover:scale-110 transition-transform">
+                                    <Zap className="h-6 w-6" />
+                                </div>
+                                <h4 className="text-2xl font-bold font-heading mb-2">Network Handshake</h4>
+                                <p className="text-sm text-muted-foreground">Marketplace Transaction Fee</p>
+                            </div>
+                            <div className="space-y-4 mb-8">
+                                <div className="text-4xl font-black tracking-tight text-white">10%<span className="text-lg text-muted-foreground font-medium"> Fee</span></div>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    A sustainability fee on all bounties paid to researchers, funding the verification and governance nodes.
+                                </p>
+                            </div>
+                            <ul className="space-y-3 text-sm text-gray-400">
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> Verified Payouts</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> Reputation Scoring</li>
+                                <li className="flex items-center gap-3"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> Legal Safe Harbor</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Trust & Ethics Section */}
             < section id="governance" className="py-40 border-t border-white/5 relative overflow-hidden" >
                 <div className="max-w-7xl mx-auto px-6 flex flex-col items-center text-center relative z-10">
@@ -297,18 +418,35 @@ export default function LandingPage() {
 
             {/* Minimal Startup Footer */}
             < footer className="py-20 border-t border-white/5 bg-black" >
-                <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row justify-between items-center gap-16">
-                    <div className="flex flex-col items-center lg:items-start gap-4">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row justify-between items-start gap-16">
+                    <div className="flex flex-col items-start gap-4">
                         <div className="flex items-center gap-3">
                             <ShieldCheck className="h-8 w-8 text-primary" />
                             <span className="text-3xl font-heading font-black tracking-tighter">H3M4</span>
                         </div>
-                        <p className="text-muted-foreground text-xs font-mono font-bold uppercase tracking-widest">Bridging Security Research & Sovereign Readiness.</p>
+                        <p className="text-muted-foreground text-xs font-mono font-bold uppercase tracking-widest leading-relaxed">Bridging Security Research & Sovereign Readiness.</p>
+                        <div className="flex items-start gap-3 mt-4 text-muted-foreground">
+                            <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                            <div className="text-xs font-mono tracking-widest uppercase leading-relaxed max-w-[250px]">
+                                <span className="text-white">National Forensic Sciences University</span><br />
+                                Sector 9, Gandhinagar<br />
+                                Gujarat, India 382007
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 mt-2 text-muted-foreground">
+                            <Mail className="h-4 w-4 text-primary" />
+                            <a href="mailto:hemanthnaik24032005@gmail.com" className="text-xs font-mono tracking-widest uppercase hover:text-primary transition-colors">hemanthnaik24032005@gmail.com</a>
+                        </div>
+                        <div className="flex items-center gap-3 mt-1 text-muted-foreground">
+                            <Phone className="h-4 w-4 text-primary" />
+                            <a href="tel:7993782420" className="text-xs font-mono tracking-widest uppercase hover:text-primary transition-colors">+91 7993782420</a>
+                        </div>
                     </div>
 
-                    <div className="flex flex-wrap justify-center gap-16 text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground">
+                    <div className="flex flex-wrap justify-start gap-16 text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground">
                         <div className="space-y-4">
                             <div className="text-white mb-6 tracking-[1em] opacity-40">Resources</div>
+                            <Link href="/pitch" className="block hover:text-primary transition-colors text-primary font-bold">Mid-Sem Presentation</Link>
                             <a href="#" className="block hover:text-primary transition-colors">Vision Paper</a>
                             <a href="#" className="block hover:text-primary transition-colors">Ethical Code</a>
                             <a href="#" className="block hover:text-primary transition-colors">Sector Maps</a>
@@ -316,7 +454,7 @@ export default function LandingPage() {
                         <div className="space-y-4">
                             <div className="text-white mb-6 tracking-[1em] opacity-40">Governance</div>
                             <a href="#" className="block hover:text-primary transition-colors">RBI Compliance</a>
-                            <a href="#" className="block hover:text-primary transition-colors">Police Intel</a>
+                            <Link href="/auth" className="block hover:text-primary transition-colors">Police Governance</Link>
                             <a href="#" className="block hover:text-primary transition-colors">Audit Trails</a>
                         </div>
                         <div className="space-y-4">

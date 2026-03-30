@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Shield,
     Users,
@@ -15,7 +16,8 @@ import {
     XCircle,
     Clock,
     ArrowRight,
-    Network
+    Network,
+    Send
 } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
 import { ThreatChart } from "@/components/threat-chart";
@@ -24,13 +26,78 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Submission } from "@shared/schema";
+import { Submission, SecurityEvent } from "@shared/schema";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { SiemLogAnalyzer } from "@/components/siem-log-analyzer";
 
 export default function AdminDashboard() {
     const { data: submissions = [] } = useQuery<Submission[]>({
         queryKey: ["/api/submissions"],
         staleTime: 0,
     });
+
+    // Fetch real security events for alerts
+    const { data: securityEvents = [] } = useQuery<SecurityEvent[]>({
+        queryKey: ["/api/cdoc/events"],
+        refetchInterval: 3000, // Real-time updates every 3 seconds
+    });
+
+    const [isAdvisoryOpen, setIsAdvisoryOpen] = useState(false);
+    const [isAlertsOpen, setIsAlertsOpen] = useState(false);
+    const [advisoryForm, setAdvisoryForm] = useState({
+        title: "",
+        severity: "medium",
+        target: "all",
+        message: ""
+    });
+
+    // Transform security events into alert format
+    const liveAlerts = securityEvents
+        .filter(event => event.severity !== "INFO") // Only show significant alerts
+        .slice(0, 10) // Latest 10 alerts
+        .map(event => ({
+            id: event.id,
+            title: event.description,
+            severity: event.severity.toLowerCase(),
+            target: event.type.includes("ATTACK") ? "Network Infrastructure" :
+                event.type.includes("LOCKDOWN") ? "Global Systems" :
+                    event.type.includes("PURGE") ? "Shard Network" :
+                        "Security Perimeter",
+            timestamp: new Date(event.timestamp).toLocaleString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                month: 'short',
+                day: 'numeric'
+            }),
+            status: event.type === "ATTACK" ? "active" :
+                event.type === "LOCKDOWN" ? "mitigated" :
+                    event.type === "PURGE" ? "resolved" : "monitoring"
+        }));
+
+    const handleSendAdvisory = () => {
+        if (!advisoryForm.title || !advisoryForm.message) {
+            toast.error("Please fill in all required fields");
+            return;
+        }
+
+        toast.success("Advisory Sent Successfully", {
+            description: `${advisoryForm.severity.toUpperCase()} advisory sent to ${advisoryForm.target}`
+        });
+
+        // Reset form
+        setAdvisoryForm({
+            title: "",
+            severity: "medium",
+            target: "all",
+            message: ""
+        });
+        setIsAdvisoryOpen(false);
+    };
 
     const pendingCount = submissions.filter(s => s.status === "pending").length;
     return (
@@ -243,8 +310,8 @@ export default function AdminDashboard() {
                     </Link>
 
                     {/* Early Warning Controller */}
-                    <div className="p-4 rounded-xl border border-border bg-card/40 hover:bg-white/5 transition-all cursor-pointer">
-                        <div className="flex items-center justify-between gap-3">
+                    <div className="p-4 rounded-xl border border-destructive/20 bg-gradient-to-br from-destructive/5 to-card/40 hover:border-destructive/40 transition-all">
+                        <div className="flex items-center justify-between gap-3 mb-3">
                             <div className="flex items-center gap-2">
                                 <BellRing className="h-4 w-4 text-destructive" />
                                 <span className="font-semibold text-sm">Early Warning Engine</span>
@@ -252,44 +319,185 @@ export default function AdminDashboard() {
                             <div className="flex h-2 w-2 rounded-full bg-destructive animate-pulse" />
                         </div>
                         <div className="mt-3 grid grid-cols-2 gap-2">
-                            <Button size="sm" variant="outline" className="text-[10px] h-7 border-destructive/20 text-destructive hover:bg-destructive/5">SEND ADVISORY</Button>
-                            <Button size="sm" variant="outline" className="text-[10px] h-7">VIEW ALERTS</Button>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-[10px] h-7 border-destructive/20 text-destructive hover:bg-destructive/10"
+                                onClick={() => setIsAdvisoryOpen(true)}
+                            >
+                                <Send className="h-3 w-3 mr-1" /> SEND ADVISORY
+                            </Button>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-[10px] h-7 hover:bg-white/5"
+                                onClick={() => setIsAlertsOpen(true)}
+                            >
+                                VIEW ALERTS
+                            </Button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Audit & Logs Preview */}
-            <div className="glass-panel rounded-xl p-6 border-white/5 bg-black/20">
+            {/* Real-Time Centralized Log Analyzer (SIEM) */}
+            <div className="mt-8">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                        <History className="h-4 w-4" /> Evidence & Audit Store (Court-Safe)
+                        <Database className="h-4 w-4" /> Real-Time Log Analysis Engine
                     </h3>
                     <Link href="/admin/logs">
-                        <Button variant="link" size="sm" className="text-xs text-primary p-0">View full audit trail &rarr;</Button>
+                        <Button variant="link" size="sm" className="text-xs text-primary p-0">Access Forensic Evidence Store &rarr;</Button>
                     </Link>
                 </div>
-                <div className="space-y-3">
-                    {[
-                        { action: "Enterprise Export", user: "Acme Corp (Enterprise)", target: "Tactical Report #502", time: "2 min ago", icon: FileSearch },
-                        { action: "Auth Bypass", user: "SYSTEM (Risk Alert)", target: "Manipulation detected (UserID: r_202)", time: "15 min ago", icon: AlertTriangle },
-                        { action: "Advisory Published", user: "Admin (H3M4)", target: "RBI Compliance Patch 4.1", time: "1 hour ago", icon: LifeBuoy },
-                        { action: "Registry Sync", user: "Police Access Node", target: "CID/NCB Direct Sync", time: "3 hours ago", icon: CheckCircle2 },
-                    ].map((log, i) => (
-                        <div key={i} className="flex items-center gap-4 py-2 border-b border-white/5 last:border-0">
-                            <div className="p-1.5 rounded bg-white/5">
-                                <log.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                <SiemLogAnalyzer />
+            </div>
+
+            {/* Send Advisory Dialog */}
+            <Dialog open={isAdvisoryOpen} onOpenChange={setIsAdvisoryOpen}>
+                <DialogContent className="max-w-2xl bg-black/95 border-destructive/20">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl font-black uppercase tracking-wider flex items-center gap-2">
+                            <BellRing className="h-5 w-5 text-destructive" />
+                            Send Security Advisory
+                        </DialogTitle>
+                        <DialogDescription>
+                            Issue a critical security advisory to monitored entities. This will trigger immediate notifications.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="space-y-4 mt-4">
+                        <div>
+                            <Label htmlFor="title" className="text-xs font-bold uppercase tracking-wider">Advisory Title *</Label>
+                            <Input
+                                id="title"
+                                placeholder="e.g., Critical Zero-Day Vulnerability in Trading APIs"
+                                value={advisoryForm.title}
+                                onChange={(e) => setAdvisoryForm({ ...advisoryForm, title: e.target.value })}
+                                className="mt-2"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="severity" className="text-xs font-bold uppercase tracking-wider">Severity Level</Label>
+                                <Select value={advisoryForm.severity} onValueChange={(val) => setAdvisoryForm({ ...advisoryForm, severity: val })}>
+                                    <SelectTrigger className="mt-2">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="critical">🔴 Critical</SelectItem>
+                                        <SelectItem value="high">🟠 High</SelectItem>
+                                        <SelectItem value="medium">🟡 Medium</SelectItem>
+                                        <SelectItem value="low">🟢 Low</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
-                            <div className="flex-1 grid grid-cols-4 gap-4 items-center">
-                                <span className="text-xs font-semibold">{log.action}</span>
-                                <span className="text-xs text-muted-foreground">{log.user}</span>
-                                <span className="text-xs text-muted-foreground truncate">{log.target}</span>
-                                <span className="text-[10px] font-mono text-muted-foreground text-right">{log.time}</span>
+
+                            <div>
+                                <Label htmlFor="target" className="text-xs font-bold uppercase tracking-wider">Target Entity</Label>
+                                <Select value={advisoryForm.target} onValueChange={(val) => setAdvisoryForm({ ...advisoryForm, target: val })}>
+                                    <SelectTrigger className="mt-2">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Monitored Entities</SelectItem>
+                                        <SelectItem value="jpm">JPMorgan Chase</SelectItem>
+                                        <SelectItem value="gs">Goldman Sachs</SelectItem>
+                                        <SelectItem value="ms">Morgan Stanley</SelectItem>
+                                        <SelectItem value="blk">BlackRock</SelectItem>
+                                        <SelectItem value="c">Citigroup</SelectItem>
+                                        <SelectItem value="wfc">Wells Fargo</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
-                    ))}
-                </div>
-            </div>
+
+                        <div>
+                            <Label htmlFor="message" className="text-xs font-bold uppercase tracking-wider">Advisory Message *</Label>
+                            <Textarea
+                                id="message"
+                                placeholder="Detailed threat intelligence, indicators of compromise, and recommended actions..."
+                                value={advisoryForm.message}
+                                onChange={(e) => setAdvisoryForm({ ...advisoryForm, message: e.target.value })}
+                                className="mt-2 min-h-[120px]"
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-4">
+                            <Button variant="outline" onClick={() => setIsAdvisoryOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button
+                                className="bg-destructive hover:bg-destructive/90"
+                                onClick={handleSendAdvisory}
+                            >
+                                <Send className="h-4 w-4 mr-2" />
+                                Send Advisory
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* View Alerts Dialog */}
+            <Dialog open={isAlertsOpen} onOpenChange={setIsAlertsOpen}>
+                <DialogContent className="max-w-4xl bg-black/95 border-white/10 max-h-[80vh] overflow-hidden flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl font-black uppercase tracking-wider flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5 text-orange-500" />
+                            Active Security Alerts
+                        </DialogTitle>
+                        <DialogDescription>
+                            Real-time threat alerts and security advisories from the Early Warning Engine
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="flex-1 overflow-y-auto space-y-3 mt-4">
+                        {liveAlerts.length > 0 ? liveAlerts.map((alert) => (
+                            <div
+                                key={alert.id}
+                                className={`p-4 rounded-xl border transition-all hover:bg-white/5 ${alert.severity === 'critical' ? 'border-red-500/30 bg-red-500/5' :
+                                    alert.severity === 'high' ? 'border-orange-500/30 bg-orange-500/5' :
+                                        alert.severity === 'medium' ? 'border-yellow-500/30 bg-yellow-500/5' :
+                                            'border-white/10 bg-card/40'
+                                    }`}
+                            >
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <Badge className={`${alert.severity === 'critical' ? 'bg-red-500' :
+                                                alert.severity === 'high' ? 'bg-orange-500' :
+                                                    alert.severity === 'medium' ? 'bg-yellow-500' :
+                                                        'bg-green-500'
+                                                } text-xs font-black`}>
+                                                {alert.severity.toUpperCase()}
+                                            </Badge>
+                                            <span className="text-xs text-muted-foreground font-mono">{alert.timestamp}</span>
+                                        </div>
+                                        <h4 className="font-semibold mb-1">{alert.title}</h4>
+                                        <p className="text-xs text-muted-foreground">Target: <span className="text-primary font-mono">{alert.target}</span></p>
+                                    </div>
+                                    <Badge variant="outline" className="text-[10px] uppercase">
+                                        {alert.status}
+                                    </Badge>
+                                </div>
+                            </div>
+                        )) : (
+                            <div className="text-center py-8 text-muted-foreground">
+                                <p className="text-sm">No active security alerts at this time.</p>
+                                <p className="text-xs mt-2">System monitoring is operational.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex justify-end pt-4 border-t border-white/10">
+                        <Button onClick={() => setIsAlertsOpen(false)}>
+                            Close
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/context/auth-context";
 import { type SecurityEvent } from "@shared/schema";
 import {
     History,
@@ -53,6 +54,7 @@ const mockLogs = [
 ];
 
 export default function EvidenceStore() {
+    const { user } = useAuth();
     const [selectedLog, setSelectedLog] = useState<any>(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isSealing, setIsSealing] = useState(false);
@@ -217,9 +219,13 @@ export default function EvidenceStore() {
                 <div>
                     <h1 className="text-3xl font-heading font-bold mb-1 flex items-center gap-2">
                         <History className="h-8 w-8 text-primary" />
-                        Evidence & Audit Store
+                        {user?.role === 'police' ? "State Evidence & Forensic Store" : "Evidence & Audit Store"}
                     </h1>
-                    <p className="text-muted-foreground italic">Immutable court-safe audit trails for national security and enterprise compliance.</p>
+                    <p className="text-muted-foreground italic">
+                        {user?.role === 'police'
+                            ? "Immutable court-safe audit trails and state-verified digital evidence for criminal investigations."
+                            : "Immutable court-safe audit trails for national security and enterprise compliance."}
+                    </p>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" className="gap-2 border-primary/20" onClick={handleExport}>
@@ -231,16 +237,35 @@ export default function EvidenceStore() {
                 </div>
             </div>
 
-            <div className="p-4 rounded-lg bg-card/40 border border-border backdrop-blur-sm flex gap-4">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <input
-                        type="text"
-                        placeholder="Search audit trail by actor, IP, or hash..."
-                        className="w-full bg-background/50 border border-white/10 rounded-md py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-colors"
-                    />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="md:col-span-3 p-4 rounded-xl bg-card/40 border border-border backdrop-blur-sm flex gap-4">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <input
+                            type="text"
+                            placeholder="Search audit trail by actor, IP, or hash..."
+                            className="w-full bg-background/50 border border-white/10 rounded-md py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                        />
+                    </div>
+                    <Button variant="outline" onClick={handleAllNodes}><Database className="h-4 w-4 mr-2" /> All Nodes</Button>
                 </div>
-                <Button variant="outline" onClick={handleAllNodes}><Database className="h-4 w-4 mr-2" /> All Nodes</Button>
+
+                {/* ECOSYSTEM NODE PULSE - NEW INNOVATION */}
+                <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
+                    <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Consensus Health</span>
+                        <Badge variant="outline" className="text-[8px] h-4 border-emerald-500/30 text-emerald-500">OPTIMAL</Badge>
+                    </div>
+                    <div className="flex gap-1 justify-between">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                            <div key={i} className="h-4 w-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                        ))}
+                    </div>
+                    <div className="text-[9px] text-muted-foreground font-mono flex justify-between">
+                        <span>VAL_NODES: 12/12</span>
+                        <span>LATENCY: 4ms</span>
+                    </div>
+                </div>
             </div>
 
             <div className="rounded-xl border border-white/10 overflow-hidden bg-card/20 backdrop-blur-sm">
@@ -321,6 +346,7 @@ export default function EvidenceStore() {
                             <TabsTrigger value="network" className="text-[10px] uppercase font-bold tracking-tight px-4 data-[state=active]:bg-[#1a2b3b]">Node Propagation</TabsTrigger>
                             <TabsTrigger value="blast" className="text-[10px] uppercase font-bold tracking-tight px-4 data-[state=active]:bg-[#1a2b3b]">System Blast Radius</TabsTrigger>
                             <TabsTrigger value="raw" className="text-[10px] uppercase font-bold tracking-tight px-4 data-[state=active]:bg-[#1a2b3b]">Raw Forensic Data</TabsTrigger>
+                            <TabsTrigger value="custody" className="text-[10px] uppercase font-bold tracking-tight px-4 data-[state=active]:bg-[#1a2b3b]">Chain of Custody</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="overview" className="mt-6 space-y-6">
@@ -437,6 +463,34 @@ export default function EvidenceStore() {
                                 <div className="pl-4">"compliance_flags": ["ISO-27001", "RBI-CYBER-SEC"],</div>
                                 <div className="pl-4">"system_metadata": "0x44 0xFA 0x22 0x99 0xCB"</div>
                                 <div>{'}'}</div>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="custody" className="mt-6 space-y-4">
+                            <div className="space-y-6 pt-4">
+                                {[
+                                    { step: "Evidence Discovery", role: "Researcher", desc: "Digital artifact identified and submitted via E2EE tunnel.", status: "VERIFIED" },
+                                    { step: "Forensic Validation", role: "H3M4 Admin", desc: "Expert cross-check across decentralized nodes complete.", status: "VERIFIED" },
+                                    { icon: Lock, step: "Immutable Anchoring", role: "Network Node", desc: "Shard #882 has broadcasted hash to mainnet for cross-sync.", status: "FINALIZED" },
+                                    { icon: ShieldCheck, step: "Court Readiness Seal", role: "Judicial Gate", desc: "Forensic notary has applied SHA-3 signature for FIR submission.", status: "READY" },
+                                ].map((s, i) => (
+                                    <div key={i} className="flex gap-4 relative">
+                                        {i < 3 && <div className="absolute left-4 top-8 bottom-0 w-[1px] bg-emerald-500/20" />}
+                                        <div className="h-8 w-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 relative z-10">
+                                            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        </div>
+                                        <div className="flex-1 pb-4">
+                                            <div className="flex justify-between items-start mb-1">
+                                                <div>
+                                                    <div className="text-xs font-bold text-foreground font-mono uppercase tracking-widest leading-none">{s.step}</div>
+                                                    <div className="text-[10px] text-primary font-bold mt-1 uppercase">{s.role}</div>
+                                                </div>
+                                                <Badge className="text-[8px] bg-emerald-500/10 text-emerald-500 border-emerald-500/20">{s.status}</Badge>
+                                            </div>
+                                            <p className="text-[11px] text-muted-foreground leading-relaxed">{s.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </TabsContent>
                     </Tabs>

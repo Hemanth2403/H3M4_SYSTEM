@@ -153,15 +153,15 @@ export default function CDOC() {
         });
     };
 
-    const handleAnalyze = () => {
+    const handleThreatHunt = () => {
         setIsAnalyzing(true);
-        toast.promise(new Promise(res => setTimeout(res, 2500)), {
-            loading: "Running Fourier Transform on ingress signals...",
+        toast.promise(new Promise(res => setTimeout(res, 3500)), {
+            loading: "Cross-referencing active telemetry with Global Threat Feed (MITRE ATT&CK)...",
             success: () => {
                 setIsAnalyzing(false);
-                return "Signal Clean: No hidden steganographic payloads detected.";
+                return "Hunt Complete: Zero confirmed IOCs originating from known APT groups.";
             },
-            error: "Scan interrupted"
+            error: "Hunt interrupted"
         });
     };
 
@@ -231,165 +231,203 @@ export default function CDOC() {
     }, [sentinelMode]);
 
     return (
-        <div className="h-[calc(100vh-120px)] overflow-hidden flex flex-col gap-6 animate-in fade-in duration-700">
-            {/* Header / Emergency Broadcast */}
-            <div className={cn(
-                "flex items-center justify-between px-6 py-4 rounded-xl border transition-all duration-500",
-                isLockdown ? "bg-red-500/20 border-red-500 animate-pulse shadow-[0_0_30px_rgba(239,68,68,0.3)]" : "bg-destructive/10 border-destructive/20 animate-pulse"
-            )}>
+        <div className="h-[calc(100vh-100px)] w-full overflow-hidden flex flex-col bg-black/95 p-4 gap-4 animate-in fade-in duration-700">
+            {/* 1. Tactical Header Bar */}
+            <div className="flex-none h-16 border border-white/10 bg-white/5 rounded-xl flex items-center justify-between px-6 backdrop-blur-md">
                 <div className="flex items-center gap-4">
-                    <Radio className={cn("h-6 w-6", isLockdown ? "text-red-500" : "text-destructive")} />
+                    <div className={cn("h-8 w-8 rounded flex items-center justify-center border", isLockdown ? "bg-red-500/20 border-red-500 animate-pulse" : "bg-primary/20 border-primary")}>
+                        <ShieldAlert className={cn("h-5 w-5", isLockdown ? "text-red-500" : "text-primary")} />
+                    </div>
                     <div>
-                        <h2 className={cn("text-sm font-heading font-extrabold uppercase tracking-tighter", isLockdown ? "text-red-500" : "text-destructive")}>
-                            {isLockdown ? `CRITICAL SYSTEM LOCKDOWN: 00:00:${lockdownTimer.toString().padStart(2, '0')}` : "System Wide Alert: Active Infiltration Simulation"}
-                        </h2>
-                        <p className={cn("text-[10px] font-mono", isLockdown ? "text-red-500/70" : "text-destructive/80")}>
-                            {isLockdown ? "NETWORK_NODES_DETACHED | ENCRYPTED_VAULT_ACTIVE" : "ENCRYPTED_SIGNAL_DETACHED | SOURCE: RED_TEAM_ALPHA"}
+                        <h1 className="text-xl font-black uppercase tracking-[0.2em] leading-none text-white">
+                            CDOC <span className="text-primary">WAR ROOM</span>
+                        </h1>
+                        <div className="flex items-center gap-2 text-[10px] font-mono opacity-60">
+                            <span className={cn("h-1.5 w-1.5 rounded-full", isLockdown ? "bg-red-500" : "bg-emerald-500 animate-pulse")} />
+                            {isLockdown ? "CRITICAL_LOCKDOWN_ACTIVE" : "OPERATIONAL_STATUS: GREEN"}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-8">
+                    <div className="text-right">
+                        <div className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1">Global Threat Level</div>
+                        <div className="text-2xl font-black font-mono leading-none flex justify-end items-baseline gap-1">
+                            {metrics?.threatLevel || '12'}<span className="text-sm opacity-50">%</span>
+                        </div>
+                    </div>
+                    <div className="h-8 w-px bg-white/10" />
+                    <div className="text-right">
+                        <div className="text-[9px] uppercase tracking-widest text-muted-foreground mb-1">Active Peers</div>
+                        <div className="text-2xl font-black font-mono leading-none flex justify-end items-baseline gap-1 text-primary">
+                            {peers?.length || '8'}<span className="text-sm opacity-50">/ 12</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* 2. Main Grid Layout */}
+            <div className="flex-1 min-h-0 grid grid-cols-12 grid-rows-6 gap-4">
+
+                {/* LEFT PANEL: Intel & Metrics (Row 1-6, Col 1-3) */}
+                <div className="col-span-3 row-span-6 flex flex-col gap-4">
+                    {/* Metrics Card */}
+                    <div className="flex-[2] rounded-xl border border-white/10 bg-white/5 p-4 flex flex-col gap-4 relative overflow-hidden group">
+                        <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-white/50 flex items-center gap-2">
+                            <Activity className="h-3 w-3" /> System Telemetry
+                        </h3>
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="p-3 rounded bg-black/40 border border-white/5">
+                                <div className="text-[9px] uppercase text-muted-foreground mb-1">Network Entropy</div>
+                                <div className="text-lg font-mono text-white">{metrics?.entropy || '94.2'}σ</div>
+                                <Progress value={metrics?.entropy || 94} className="h-1 mt-2 bg-white/5" />
+                            </div>
+                            <div className="p-3 rounded bg-black/40 border border-white/5">
+                                <div className="text-[9px] uppercase text-muted-foreground mb-1">Signal Integrity</div>
+                                <div className="text-lg font-mono text-white">{metrics?.integrity || '99.9'}%</div>
+                                <Progress value={metrics?.integrity || 99} className="h-1 mt-2 bg-white/5" />
+                            </div>
+                            <div className="p-3 rounded bg-black/40 border border-white/5">
+                                <div className="text-[9px] uppercase text-muted-foreground mb-1">Core Load</div>
+                                <div className="text-lg font-mono text-white">14%</div>
+                                <Progress value={14} className="h-1 mt-2 bg-white/5" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Sentinel Mode Status */}
+                    <div className="flex-1 rounded-xl border border-white/10 bg-white/5 p-4 flex flex-col justify-center gap-2">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-white/50 flex items-center gap-2">
+                            <Eye className="h-3 w-3" /> Sentinel Mode
+                        </h3>
+                        <div className="text-xl font-black font-mono text-primary uppercase">{sentinelMode}</div>
+                        <p className="text-[10px] text-muted-foreground leading-tight">
+                            {sentinelMode === "NEURAL" ? "Heuristic patterns active." : "Standard rule-based filtering."}
                         </p>
                     </div>
                 </div>
-                <Badge variant="outline" className={cn("font-bold text-[10px]", isLockdown ? "bg-red-500/10 border-red-500 text-red-500" : "bg-destructive/10 border-destructive text-destructive")}>
-                    THREAT_LVL: {isLockdown ? '99' : metrics?.threatLevel || '70'}%
-                </Badge>
-            </div>
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
-                {/* Left: Global Visualization (The WOW Factor) */}
-                <div className="lg:col-span-3 flex flex-col gap-6 overflow-hidden">
-                    <div className="flex-1 glass-panel rounded-2xl relative overflow-hidden bg-black/40 border-white/5 p-6 flex items-center justify-center">
-                        {/* Abstract animated grid map */}
-                        <div className="absolute inset-0 opacity-10 pointer-events-none">
-                            <div className="w-full h-full" style={{ backgroundImage: 'radial-gradient(circle, #26d962 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-                        </div>
+                {/* CENTER PANEL: The MAP (Row 1-4, Col 4-9) */}
+                <div className="col-span-6 row-span-4 rounded-2xl border border-white/10 bg-[#050505] relative overflow-hidden group">
+                    {/* Grid BG */}
+                    <div className="absolute inset-0 opacity-20"
+                        style={{
+                            backgroundImage: `linear-gradient(#1a1a1a 1px, transparent 1px), linear-gradient(90deg, #1a1a1a 1px, transparent 1px)`,
+                            backgroundSize: '40px 40px'
+                        }}
+                    />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)]" />
 
-                        <div className="relative w-full h-full flex flex-col items-center justify-center">
-                            <div className="relative">
+                    {/* MAP CONTENT */}
+                    <div className="relative w-full h-full p-8">
+                        {/* SVG Lines */}
+                        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                            <defs>
+                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stopColor="rgba(38, 217, 98, 0)" />
+                                    <stop offset="50%" stopColor="rgba(38, 217, 98, 0.3)" />
+                                    <stop offset="100%" stopColor="rgba(38, 217, 98, 0)" />
+                                </linearGradient>
+                            </defs>
+                            {[0, 60, 120, 180, 240, 300].map((deg, i) => {
+                                const rad = (deg * Math.PI) / 180;
+                                const x2 = 50 + 30 * Math.cos(rad);
+                                const y2 = 50 + 30 * Math.sin(rad);
+                                return <line key={i} x1="50%" y1="50%" x2={`${x2}%`} y2={`${y2}%`} stroke="url(#lineGradient)" strokeDasharray="4 4" className="opacity-40" />;
+                            })}
+                        </svg>
+
+                        {/* Radar Sweep */}
+                        <AnimatePresence>
+                            {isAnalyzing && (
                                 <motion.div
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                                    className="w-[450px] h-[450px] rounded-full border border-primary/10 flex items-center justify-center relative"
+                                    initial={{ rotate: 0, opacity: 0 }}
+                                    animate={{ rotate: 360, opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                    className="absolute top-1/2 left-1/2 w-[160%] h-[160%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0deg,rgba(38,217,98,0.15)_60deg,transparent_100deg)] rounded-full pointer-events-none"
+                                />
+                            )}
+                        </AnimatePresence>
+
+                        {/* Center Core */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                            <div className="relative h-20 w-20 rounded-full bg-black border-2 border-primary/50 flex items-center justify-center shadow-[0_0_30px_rgba(38,217,98,0.2)]">
+                                <ShieldAlert className="h-8 w-8 text-primary" />
+                                <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping" />
+                            </div>
+                            <div className="mt-2 text-[9px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded">Core_Sys</div>
+                        </div>
+
+                        {/* Nodes representing Listed Companies */}
+                        {["JPM", "GS", "MS", "BLK", "C", "WFC"].map((ticker, i) => {
+                            const deg = i * 60;
+                            const rad = (deg * Math.PI) / 180;
+                            const left = 50 + 30 * Math.cos(rad);
+                            const top = 50 + 30 * Math.sin(rad);
+                            return (
+                                <motion.div
+                                    key={ticker}
+                                    className="absolute flex flex-col items-center group cursor-pointer"
+                                    style={{ left: `${left}%`, top: `${top}%`, transform: 'translate(-50%, -50%)' }}
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: i * 0.1 }}
+                                    onClick={() => handleDeepScan({ id: ticker, peerId: ticker, type: 'ENTITY_NODE' })}
                                 >
-                                    <div className="w-[350px] h-[350px] rounded-full border-2 border-primary/5 border-dashed" />
-                                    <div className="w-[200px] h-[200px] rounded-full border border-primary/20" />
-
-                                    {/* Scanning Beam */}
-                                    <motion.div
-                                        className="absolute top-1/2 left-1/2 w-1/2 h-1 bg-gradient-to-r from-primary to-transparent origin-left"
-                                        animate={{ rotate: 360 }}
-                                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                                        style={{ top: 'calc(50% - 0.5px)', left: '50%' }}
-                                    />
-
-                                    {/* Orbiting Nodes */}
-                                    {[...Array(3)].map((_, i) => (
-                                        <motion.div
-                                            key={i}
-                                            className="absolute h-2 w-2 bg-primary rounded-full shadow-[0_0_10px_rgba(38,217,98,0.8)]"
-                                            animate={{ rotate: 360 }}
-                                            transition={{ duration: 10 + i * 5, repeat: Infinity, ease: "linear" }}
-                                            style={{
-                                                top: '50%',
-                                                left: '50%',
-                                                marginLeft: -4,
-                                                marginTop: -4,
-                                                transformOrigin: `${120 + i * 40}px center`
-                                            }}
-                                        />
-                                    ))}
-                                </motion.div>
-
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="text-center space-y-2">
-                                        <motion.div
-                                            animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
-                                            transition={{ duration: 2, repeat: Infinity }}
-                                        >
-                                            <Globe className="h-28 w-28 text-primary mx-auto" />
-                                        </motion.div>
-                                        <div className="font-mono text-[8px] text-primary/60 tracking-[0.4em] uppercase">Sector_Sync_Active</div>
+                                    <div className={cn(
+                                        "h-12 w-12 rounded-xl flex items-center justify-center border transition-all duration-300 relative overflow-hidden",
+                                        isAnalyzing ? "bg-primary/20 border-primary shadow-[0_0_20px_rgba(38,217,98,0.4)]" : "bg-black/80 border-white/10 group-hover:border-primary/50"
+                                    )}>
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <Server className={cn("h-5 w-5", isAnalyzing ? "text-primary" : "text-slate-400 group-hover:text-primary")} />
                                     </div>
-                                </div>
+                                    <div className="mt-2 px-2 py-1 rounded bg-black/50 border border-white/5 backdrop-blur-md">
+                                        <div className="text-[10px] font-black font-mono text-white tracking-widest">{ticker}</div>
+                                    </div>
+                                    {/* Status Indicator */}
+                                    <div className="mt-1 flex items-center gap-1">
+                                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="text-[8px] text-emerald-500 font-bold uppercase">SECURE</span>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
 
-                                {/* Animated "Attacks" */}
-                                <AnimatePresence>
-                                    {attacks.map((id) => (
-                                        <motion.div
-                                            key={id}
-                                            initial={{ scale: 0, opacity: 0 }}
-                                            animate={{
-                                                scale: [0, 1.5, 0],
-                                                opacity: [0, 0.8, 0],
-                                                x: [Math.random() * 400 - 200, Math.random() * 200 - 100],
-                                                y: [Math.random() * 400 - 200, Math.random() * 200 - 100]
-                                            }}
-                                            exit={{ scale: 2, opacity: 0 }}
-                                            transition={{ duration: 4, repeat: Infinity, delay: (id % 5) * 1.5 }}
-                                            className="absolute h-4 w-4 rounded-full bg-destructive shadow-[0_0_20px_rgba(239,68,68,0.8)]"
-                                        />
-                                    ))}
-                                </AnimatePresence>
-
-                                {/* Waveform Scan Overlay */}
-                                <AnimatePresence>
-                                    {isAnalyzing && (
-                                        <motion.div
-                                            initial={{ height: 0 }}
-                                            animate={{ height: "100%" }}
-                                            exit={{ height: 0 }}
-                                            className="absolute top-0 left-0 w-full bg-primary/10 border-b-2 border-primary z-20 pointer-events-none"
-                                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                        />
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        </div>
-
-                        {/* Overlay Controls */}
-                        <div className="absolute top-6 left-6 grid grid-cols-1 gap-4">
-                            <div className="p-4 rounded-lg bg-black/60 border border-white/10 backdrop-blur-md space-y-2 min-w-[150px]">
-                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-2">
-                                    <Activity className="h-3 w-3 text-primary" /> Entropy
-                                </h3>
-                                <div className="text-xl font-mono font-bold text-white tracking-widest">
-                                    {metrics?.entropy || '92.4'}<span className="text-[10px] text-muted-foreground ml-1">σ</span>
-                                </div>
-                            </div>
-                            <div className="p-4 rounded-lg bg-black/60 border border-white/10 backdrop-blur-md space-y-2 min-w-[150px]">
-                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-2">
-                                    <Zap className="h-3 w-3 text-orange-500" /> Integrity
-                                </h3>
-                                <div className="text-xl font-mono font-bold text-white tracking-widest">
-                                    {metrics?.integrity || '99.9'}<span className="text-[10px] text-muted-foreground ml-1">%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="absolute top-6 right-6 p-4 rounded-lg bg-black/60 border border-white/10 backdrop-blur-md space-y-2 text-right">
-                            <h3 className="text-[10px] font-bold text-muted-foreground uppercase">Signal Strength</h3>
-                            <div className="flex gap-1 justify-end items-end h-6">
-                                {[1, 2, 3, 4, 5].map(i => (
+                        {/* Attack Packets */}
+                        <AnimatePresence>
+                            {attacks.map((id) => {
+                                const deg = (id % 6) * 60;
+                                const rad = (deg * Math.PI) / 180;
+                                const startX = 50 + 30 * Math.cos(rad);
+                                const startY = 50 + 30 * Math.sin(rad);
+                                return (
                                     <motion.div
-                                        key={i}
-                                        animate={{ height: (parseFloat(metrics?.signalStrength || '88') > (i * 15)) ? [8, 16, 12] : 4 }}
-                                        transition={{ duration: 0.5, repeat: Infinity }}
-                                        className={cn("w-1.5 rounded-full", (parseFloat(metrics?.signalStrength || '88') > (i * 15)) ? "bg-primary" : "bg-white/10")}
+                                        key={id}
+                                        className="absolute h-2 w-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] z-20"
+                                        initial={{ left: `${startX}%`, top: `${startY}%`, opacity: 1, scale: 1 }}
+                                        animate={{ left: "50%", top: "50%", opacity: [1, 0.5, 0], scale: 0.5 }}
+                                        transition={{ duration: 1.5, ease: "linear" }}
                                     />
-                                ))}
-                            </div>
-                            <div className="text-[8px] font-mono text-muted-foreground">{metrics?.signalStrength || '88.1'} dBm</div>
-                        </div>
+                                );
+                            })}
+                        </AnimatePresence>
+                    </div>
 
-                        <div className="absolute bottom-6 right-6">
-                            <Button
-                                size="sm"
-                                onClick={handleAnalyze}
-                                disabled={isAnalyzing}
-                                className="bg-primary text-black font-bold text-xs gap-2 shadow-[0_0_20px_rgba(38,217,98,0.3)]"
-                            >
-                                {isAnalyzing ? <Activity className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />}
-                                {isAnalyzing ? "SCANNING..." : "ANALYZE WAVEFORM"}
-                            </Button>
-                        </div>
+                    {/* Map Overlay Controls */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
+                        <Button
+                            size="lg"
+                            onClick={handleThreatHunt}
+                            disabled={isAnalyzing}
+                            className={cn(
+                                "h-12 px-8 font-black text-xs uppercase tracking-[0.2em] shadow-2xl border-2 transition-all",
+                                isAnalyzing ? "bg-red-500/10 text-red-500 border-red-500 animate-pulse" : "bg-primary text-black border-primary hover:scale-105"
+                            )}
+                        >
+                            {isAnalyzing ? "SCANNING..." : "INITIATE THREAT HUNT"}
+                        </Button>
                     </div>
 
                     {/* Lockdown Overlay Overlay */}
@@ -419,170 +457,68 @@ export default function CDOC() {
                             </motion.div>
                         )}
                     </AnimatePresence>
+                </div>
 
-                    {/* Lower Stream */}
-                    <div className="h-40 glass-panel rounded-2xl bg-[#0c141c]/40 border-white/5 flex flex-col font-mono text-[10px] text-primary/80">
-                        <div className="px-4 py-2 border-b border-white/5 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Terminal className="h-3 w-3" /> LIVE_P2P_FORENSICS
-                            </div>
-                            <div className="text-[8px] opacity-50 uppercase tracking-widest">Shard: #882-9</div>
+                {/* RIGHT PANEL: Controls (Row 1-6, Col 10-12) */}
+                <div className="col-span-3 row-span-6 flex flex-col gap-4">
+                    {/* Actions Group */}
+                    <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Response Protocols</h3>
+                        <div className="space-y-3">
+                            <Button onClick={handleLockdown} disabled={isLockdown} className="w-full bg-red-600 hover:bg-red-700 text-white font-bold tracking-wider">
+                                <ShieldAlert className="mr-2 h-4 w-4" /> LOCKDOWN
+                            </Button>
+                            <Button onClick={handlePurge} disabled={isPurging || isLockdown} variant="outline" className="w-full border-primary/20 text-primary hover:bg-primary/10 font-bold tracking-wider">
+                                <Crosshair className="mr-2 h-4 w-4" /> PURGE VECTORS
+                            </Button>
+                            <Button onClick={handleVerifyLedger} disabled={isLedgerChecking} variant="outline" className="w-full border-white/10 hover:bg-white/5 font-bold tracking-wider">
+                                <Activity className="mr-2 h-4 w-4" /> VERIFY LEDGER
+                            </Button>
                         </div>
-                        <div className="flex-1 p-4 overflow-y-auto space-y-1 scrollbar-hide">
-                            <AnimatePresence mode="popLayout">
-                                {events?.map((event: SecurityEvent) => (
-                                    <motion.div
-                                        key={event.id}
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        className={cn(
-                                            "flex gap-3 font-bold items-center p-1 px-2 rounded",
-                                            event.type === 'PURGE' || event.type === 'LOCKDOWN' ? "bg-primary/10 text-primary" : "text-primary/70"
-                                        )}
-                                    >
-                                        <span className="opacity-40 font-mono text-[8px]">[{new Date(event.timestamp).toLocaleTimeString()}]</span>
-                                        <span className="flex-1">--- {event.description} ---</span>
-                                        <Badge variant="outline" className="text-[8px] h-3 border-primary/30 uppercase">{event.severity}</Badge>
-                                    </motion.div>
-                                ))}
+                    </div>
 
-                                {peers?.map((scan: P2PPeer) => (
-                                    <motion.div
-                                        key={scan.id}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0 }}
-                                        className="grid grid-cols-7 gap-2 items-center hover:bg-white/5 p-1 rounded transition-colors group"
-                                    >
-                                        <span className="text-white/20 col-span-1">[{new Date(scan.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span>
-                                        <span className="text-primary font-bold col-span-1">PEER_{scan.peerId}</span>
-                                        <span className="opacity-50 font-mono text-[9px] truncate col-span-1">{scan.hash}</span>
-                                        <span className="col-span-1 text-muted-foreground">{scan.isp}</span>
-                                        <Badge variant="outline" className="col-span-1 text-[8px] h-4 inline-flex items-center justify-center opacity-70 group-hover:opacity-100">{scan.type}</Badge>
-                                        <div className="col-span-1 flex items-center gap-1">
-                                            <div className={cn("h-1 w-1 rounded-full", scan.status === 'VALID' ? 'bg-emerald-500' : 'bg-red-500 animate-pulse')} />
-                                            <span className={cn(scan.status === 'VALID' ? 'text-emerald-500' : 'text-red-500 font-bold')}>{scan.status}</span>
-                                        </div>
-                                        <div className="col-span-1 flex items-center gap-2">
-                                            <Progress value={parseInt(scan.reputation)} className="h-1 bg-white/5 w-8" />
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                onClick={() => handleDeepScan(scan)}
-                                            >
-                                                <Search className="h-2 w-2 text-primary" />
-                                            </Button>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
+                    {/* Mitigation Status */}
+                    <div className="flex-1 rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Active Countermeasures</h3>
+                        <div className="space-y-2">
+                            {['IP Rate Limiting', 'WAF Edge Shield', 'Packet Inspection'].map((item) => (
+                                <div key={item} className="flex items-center justify-between p-2 rounded bg-black/20 text-[10px]">
+                                    <span>{item}</span>
+                                    <Badge className="bg-emerald-500/20 text-emerald-500 border-none h-4">ACTIVE</Badge>
+                                </div>
+                            ))}
+                            <div className="flex items-center justify-between p-2 rounded bg-black/20 text-[10px] opacity-70">
+                                <span>Quantum Decryption</span>
+                                <Badge variant="outline" className="border-white/20 text-muted-foreground h-4">OFFLINE</Badge>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Right: Operational Controls */}
-                <div className="flex flex-col gap-6">
-                    <div className="p-6 rounded-2xl bg-card/20 border border-white/10 space-y-6">
-                        <div className="space-y-2">
-                            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                                <Zap className="h-4 w-4 text-orange-500" /> Auto-Mitigation
-                            </h3>
-                            <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs">IP Rate Limiting</span>
-                                    <Badge className="bg-emerald-500/20 text-emerald-500 text-[8px] border-emerald-500/30">ACTIVE</Badge>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs">WAF Edge Shield</span>
-                                    <Badge className="bg-emerald-500/20 text-emerald-500 text-[8px] border-emerald-500/30">ACTIVE</Badge>
-                                </div>
-                                <div className="flex items-center justify-between opacity-50">
-                                    <span className="text-xs">Quantum Hardening</span>
-                                    <Badge variant="outline" className="text-[8px] border-white/10 uppercase">Pending</Badge>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                                <Server className="h-4 w-4 text-blue-500" /> Infrastructure Load
-                            </h3>
-                            <div className="space-y-4">
-                                <div className="space-y-1">
-                                    <div className="flex justify-between text-[10px]">
-                                        <span>CORE_CPU</span>
-                                        <span className="text-primary font-mono">14%</span>
-                                    </div>
-                                    <Progress value={14} className="h-1 bg-white/5" />
-                                </div>
-                                <div className="space-y-1">
-                                    <div className="flex justify-between text-[10px]">
-                                        <span>NETWORK_BANDWIDTH</span>
-                                        <span className="text-orange-500 font-mono">68%</span>
-                                    </div>
-                                    <Progress value={68} className="h-1 bg-white/5 [&>div]:bg-orange-500" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="pt-4 space-y-3 border-t border-white/5">
-                            <Button
-                                onClick={handleVerifyLedger}
-                                variant="outline"
-                                disabled={isLedgerChecking}
-                                className="w-full border-white/10 font-bold gap-2 group"
-                            >
-                                <Activity className={cn("h-4 w-4 text-emerald-500", isLedgerChecking && "animate-pulse")} />
-                                {isLedgerChecking ? "VERIFYING..." : "INSTANT LEDGER CHECK"}
-                                <div className={cn(
-                                    "h-1.5 w-1.5 rounded-full ml-auto",
-                                    ledgerStatus === "SYNCED" ? "bg-emerald-500 shadow-[0_0_8px_#10b981]" : "bg-orange-500 animate-ping"
-                                )} />
-                            </Button>
-                            <Button
-                                onClick={() => setIsMissionBriefOpen(true)}
-                                variant="outline"
-                                className="w-full border-white/10 font-bold gap-2"
-                            >
-                                <Terminal className="h-4 w-4 text-primary" /> VIEW MISSION BRIEF
-                            </Button>
-                            <Button
-                                onClick={handleLockdown}
-                                disabled={isLockdown}
-                                className="w-full bg-destructive text-destructive-foreground hover:bg-destructive/90 font-bold gap-2 mt-4"
-                            >
-                                <ShieldAlert className="h-4 w-4" /> INITIATE LOCKDOWN
-                            </Button>
-                            <Button
-                                onClick={handlePurge}
-                                variant="outline"
-                                disabled={isPurging || isLockdown}
-                                className={cn(
-                                    "w-full border-white/10 font-bold gap-2 relative overflow-hidden",
-                                    isPurging && "border-primary/50 text-primary"
-                                )}
-                            >
-                                <Crosshair className={cn("h-4 w-4", isPurging && "animate-spin")} />
-                                {isPurging ? "PURGING_VECTOR..." : "TARGET PURGE"}
-                                {isPurging && (
-                                    <motion.div
-                                        className="absolute bottom-0 left-0 h-1 bg-primary"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "100%" }}
-                                        transition={{ duration: 3 }}
-                                    />
-                                )}
-                            </Button>
-                        </div>
+                {/* CENTER BOTTOM PANEL: Live Terminal (Row 5-6, Col 4-9) - Spanning 2 Rows */}
+                <div className="col-span-6 row-span-2 rounded-xl border border-white/10 bg-black/80 font-mono text-[10px] p-4 flex flex-col overflow-hidden relative">
+                    <div className="absolute top-0 right-0 p-2 opacity-20">
+                        <Terminal className="h-6 w-6" />
                     </div>
-
-                    <div className="flex-1 min-h-[300px]">
-                        <SecurityAnalyst />
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-primary mb-2 flex items-center gap-2">
+                        <Radio className="h-3 w-3" /> Live Event Stream // Shard_882
+                    </h3>
+                    <div className="flex-1 overflow-y-auto space-y-1 pr-2 scrollbar-thin scrollbar-thumb-white/10">
+                        <AnimatePresence initial={false}>
+                            {[...(events || []), ...(neuralLog.map(l => ({ id: Math.random(), timestamp: new Date(), description: l, severity: 'INFO', type: 'NEURAL' as any })))].slice(0, 8).map((log: any) => (
+                                <motion.div key={log.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex gap-2 text-white/70 border-b border-white/5 pb-1">
+                                    <span className="opacity-30">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+                                    <span className={cn(log.severity === 'CRITICAL' ? 'text-red-500' : 'text-emerald-500')}>{log.type}</span>
+                                    <span>{log.description}</span>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </div>
                 </div>
+
             </div>
 
+            {/* Dialogs unchanged */}
             {/* Asset Telemetry Dialog */}
             <Dialog open={isAssetViewOpen} onOpenChange={setIsAssetViewOpen}>
                 <DialogContent className="max-w-2xl bg-[#0a0a0b] border-white/10 p-0 overflow-hidden shadow-[0_0_50px_rgba(38,217,98,0.15)]">
